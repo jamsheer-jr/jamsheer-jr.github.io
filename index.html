@@ -1709,6 +1709,84 @@
   body .repair-demo .rd-share,body.dark .repair-demo .rd-share{background:#357a44;border-color:#2c6a3b;border-radius:10px}
   body .repair-demo .rd-share:hover,body.dark .repair-demo .rd-share:hover{background:#2c6a3b}
   body .repair-demo .rd-share-note,body.dark .repair-demo .rd-share-note{color:#a49e8f}
+
+  /* ============ THIS BUILD: REALISTIC OG TEARDOWN + CLOCK ENGINE LOGIC/UI ============
+     (A) TEARDOWN — genuinely OG, not cartoon: the SVG above is now a shaded
+     teardown illustration (matte pouch-cell battery with full fine print and
+     barcode, shaded Phillips screws with specular highlights, a PCB with
+     etched traces / shield cans / caps / gold pins, real camera lenses,
+     speaker mesh, copper flex with connector ends, machined frame and tray).
+     This layer finishes it: desaturated photo-like grading, soft bench-lamp
+     shadows under every lifted part, matte colours only, etched part labels,
+     and NO emoji / neon / bright toy colours anywhere in the scene.
+     (B) CLOCK ENGINE UI — premium control deck: the Rewind / Freeze /
+     Forward bar is a machined brass deck with 52px targets, exact-hour
+     labels and a live SYNC line; the digital readout is an inset display;
+     timezone and travel controls are quieter and cleaner.
+     (C) FREEZE (logic in JS) — body.time-frozen and body.page-frozen are now
+     ONE state; everything on the page pauses EXCEPT the Clock Engine, whose
+     hands / digital / map keep running live. */
+  /* --- (A) Teardown grading & shadows --- */
+  .td-svg{filter:saturate(.86) contrast(1.04) brightness(.99)}
+  .td-bench .p-battery,.td-bench .p-board,.td-bench .p-camera,.td-bench .p-speaker,.td-bench .p-taptic,.td-bench .p-shield,.td-bench .p-battshield,.td-bench .p-charge,.td-bench .p-flex2{filter:drop-shadow(0 3px 3px rgba(0,0,0,.38))}
+  .td-bench .td-cover{filter:drop-shadow(0 5px 6px rgba(0,0,0,.42))}
+  .td-screw circle{fill:#979ea5;stroke:#3f4449;stroke-width:.9}
+  .td-screw path{stroke:#24282c;stroke-width:1.35}
+  .td-tray{fill:#33373b;stroke:#5b6167;stroke-width:1.1}
+  .td-tray-label{fill:#b9bec2;letter-spacing:.18em}
+  .td-part-label{fill:#a9b39e;opacity:.88;font-size:6px;letter-spacing:.07em}
+  .td-glowline{stroke:#7d5c33!important;filter:none!important}
+  .td-bench[data-stage="2"] .td-glowline,.td-bench[data-stage="3"] .td-glowline{stroke:#7d5c33!important;filter:none!important}
+  .td-ribbon,.td-trace-blue{filter:none!important}
+  body .repair-demo .rd-bench,body.dark .repair-demo .rd-bench{
+    background:
+      radial-gradient(420px 190px at 50% 0%,rgba(255,244,214,.10),transparent 62%),
+      repeating-linear-gradient(0deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px),
+      repeating-linear-gradient(90deg,rgba(255,255,255,.045) 0 1px,transparent 1px 22px),
+      linear-gradient(165deg,#334e55,#2a4249 58%,#22363c);
+    box-shadow:inset 0 3px 16px rgba(0,0,0,.6),inset 0 0 0 4px rgba(0,0,0,.12),inset 0 -22px 34px rgba(0,0,0,.28),0 18px 34px rgba(0,0,0,.4)}
+  .rd-phase{letter-spacing:.22em}
+  /* --- (C) Freeze: page still, engine alive (both class names, one state) --- */
+  body.time-frozen .time-engine *,body.time-frozen .time-engine *::before,body.time-frozen .time-engine *::after{animation-play-state:running!important}
+  body.time-frozen #freezeChip,body.page-frozen #freezeChip{animation-play-state:running!important}
+  body.time-frozen .te-backdrop{background:rgba(3,20,34,.78)}
+  /* --- (B) Clock Engine: premium panel & control deck --- */
+  .time-engine .te-panel{border-radius:22px;padding:28px 28px 26px}
+  .time-engine .te-sub{font-size:14px;line-height:1.65;max-width:560px}
+  .te-controls-top{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:9px;margin:18px 0 4px;padding:14px;background:linear-gradient(180deg,#191510,#241c0e);border:1px solid rgba(201,169,89,.55);border-radius:16px;box-shadow:0 16px 34px rgba(20,12,0,.35),inset 0 1px 0 rgba(255,240,190,.14),inset 0 -10px 20px rgba(0,0,0,.35)}
+  .te-controls-top .te-controls-label{grid-column:1/-1;margin:0 0 2px}
+  .te-sync{grid-column:1/-1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:#a9d6a2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .te-sync::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 7px rgba(74,222,128,.9);margin-right:7px;vertical-align:1px}
+  .time-engine .te-controls-top .te-btn{min-height:52px;padding:10px 8px;border-radius:12px;font-size:14.5px;letter-spacing:.01em;background:linear-gradient(180deg,#faf1d7,#e9d49b);border:1px solid #8a6d2f;color:#332507;box-shadow:0 7px 16px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.75),inset 0 -5px 9px rgba(122,92,30,.22)}
+  .time-engine .te-controls-top .te-btn small{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;opacity:.75;letter-spacing:.03em}
+  .time-engine .te-controls-top .te-btn:hover{background:linear-gradient(180deg,#fff6dc,#f0d98c);color:#241a04;transform:translateY(-1px)}
+  .time-engine .te-controls-top .te-btn:active{transform:scale(.965)}
+  .time-engine .te-controls-top .te-btn:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}
+  .time-engine .te-controls-top .te-btn.te-btn-freeze{background:linear-gradient(180deg,#2b2110,#1d1709);color:#f3e9d2;border-color:rgba(201,169,89,.7)}
+  .time-engine .te-controls-top .te-btn.te-btn-freeze:hover{background:linear-gradient(180deg,#3a2c13,#241c0e);color:#fff3d6}
+  .time-engine .te-controls-top .te-btn.is-frozen{background:linear-gradient(180deg,#0e5a86,#084a73);color:#eaf7ff;border-color:#7dd3fc;box-shadow:0 0 0 3px rgba(56,189,248,.30),0 8px 18px rgba(0,20,40,.4)}
+  /* Inset digital display */
+  .time-engine .te-digital{margin:16px auto 0;max-width:430px;padding:13px 18px 11px;border-radius:14px;background:linear-gradient(180deg,rgba(10,8,3,.52),rgba(10,8,3,.34));border:1px solid rgba(201,169,89,.40);box-shadow:inset 0 2px 10px rgba(0,0,0,.5),inset 0 -1px 0 rgba(255,240,190,.12)}
+  .time-engine .te-digital>span{margin-top:4px}
+  /* Quieter secondary controls */
+  .time-engine .te-tz{margin-top:14px}
+  .time-engine .te-tz select{min-height:44px;border-radius:999px;padding:9px 16px;border-width:1px;box-shadow:inset 0 1px 0 rgba(255,240,190,.15)}
+  .time-engine .te-tz select:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}
+  .time-engine .te-drag-hint{margin-top:12px;font-size:10px;letter-spacing:.1em;text-transform:none}
+  .time-engine .te-travel-btn{margin-top:13px;padding:11px 20px;font-size:13.5px;background:transparent;color:#f3e9d2;border:1.5px solid rgba(201,169,89,.75);box-shadow:none}
+  .time-engine .te-travel-btn:hover{background:rgba(201,169,89,.16);filter:none}
+  .time-engine .te-travel-status{display:inline-block;margin-top:12px;padding:7px 13px;border-radius:999px;background:rgba(10,8,3,.38);border:1px solid rgba(201,169,89,.32);font-size:10.5px;min-height:0}
+  .te-fullmap-btn{min-height:46px;border-radius:12px;background:linear-gradient(180deg,#2b2110,#1d1709);border:1px solid rgba(201,169,89,.7);color:#f3e9d2;box-shadow:0 8px 18px rgba(0,0,0,.3)}
+  .te-fullmap-btn:hover{background:linear-gradient(180deg,#3a2c13,#241c0e)}
+  .te-fullmap-btn:focus-visible,.te-travel-btn:focus-visible{outline:3px solid #7dd3fc;outline-offset:2px}
+  @media(max-width:560px){
+    .time-engine .te-panel{padding:22px 15px 20px}
+    .te-controls-top{gap:7px;padding:11px}
+    .time-engine .te-controls-top .te-btn{min-height:50px;font-size:12.5px;padding:9px 4px;gap:4px}
+    .time-engine .te-controls-top .te-btn small{font-size:10px}
+    .te-sync{font-size:9.5px}
+  }
+
 </style>
 </head>
 <body>
@@ -1812,18 +1890,19 @@
     <button class="te-close" id="teClose" type="button" aria-label="Close Clock Engine">✕</button>
     <div class="te-kicker">// Clock Engine</div>
     <h2>Inside <span>Time</span></h2>
-    <p class="te-sub">The world map is now fully visible beside the watch — the clock no longer covers it. Drag the dial to move time and watch day &amp; night slide across the map, or tap Full Map to fill the whole engine with the map.</p>
+    <p class="te-sub">One instant, everywhere in sync. Drag the dial &mdash; one full turn is exactly one hour &mdash; and the hands, digital readout, background and world-map day / night all move together. Rewind and Forward shift exactly one hour.</p>
     <div class="te-controls te-controls-top" role="group" aria-label="Time controls — Rewind, Freeze and Forward">
-      <span class="te-controls-label" aria-hidden="true">⏱ Time Control</span>
-      <button class="te-btn" id="teRewindBtn" type="button">⏪ Rewind −1h</button>
-      <button class="te-btn" id="teFreezeBtn" type="button" aria-pressed="false">⏸ Freeze</button>
-      <button class="te-btn" id="teForwardBtn" type="button">Forward +1h ⏩</button>
+      <span class="te-controls-label" aria-hidden="true">Time Control &middot; 1 tap = 1 hour</span>
+      <button class="te-btn te-btn-nav" id="teRewindBtn" type="button" aria-label="Rewind exactly one hour"><span aria-hidden="true">&#171;</span> Rewind <small>&minus;1h</small></button>
+      <button class="te-btn te-btn-freeze" id="teFreezeBtn" type="button" aria-pressed="false" aria-label="Freeze the page — the watch keeps running">&#10052; Freeze page</button>
+      <button class="te-btn te-btn-nav" id="teForwardBtn" type="button" aria-label="Forward exactly one hour">Forward <small>+1h</small> <span aria-hidden="true">&#187;</span></button>
+      <span class="te-sync" id="teSync" aria-live="polite">Synced &middot; real time</span>
     </div>
     <div class="te-layout">
     <div class="te-map-wrap">
       <canvas id="teMap" width="1080" height="540" aria-hidden="true"></canvas>
-      <div class="te-map-legend" aria-hidden="true" style="margin-top:10px">🌍 World Map&nbsp;·&nbsp;<span class="tml-dot tml-day"></span>Day&nbsp;&nbsp;<span class="tml-dot tml-night"></span>Night</div>
-      <button class="te-fullmap-btn" id="teFullMapBtn" type="button" aria-pressed="false">🌍 Full Map — Fill the Engine</button>
+      <div class="te-map-legend" aria-hidden="true" style="margin-top:10px">World Map&nbsp;&middot;&nbsp;<span class="tml-dot tml-day"></span>Day&nbsp;&nbsp;<span class="tml-dot tml-night"></span>Night</div>
+      <button class="te-fullmap-btn" id="teFullMapBtn" type="button" aria-pressed="false">Full Map &mdash; Fill the Engine</button>
     </div>
     <div class="te-side-col">
     <div class="te-stage" id="teStage" role="slider" tabindex="0" title="Drag in a circle to move time — one full turn is one hour" aria-label="Time dial — drag in a circle to move time, one full turn is one hour. Arrow keys move five minutes.">
@@ -1921,8 +2000,8 @@
         <option value="America/New_York">New York (ET)</option>
       </select>
     </label>
-    <p class="te-drag-hint">↻ Drag the dial — one full turn = one hour</p>
-    <button class="te-travel-btn" id="teTravelBtn" type="button">⚙ Trigger Time Travel</button>
+    <p class="te-drag-hint">Drag the dial in a circle &middot; 1 turn = 1 hour &middot; Arrow keys = 5 minutes</p>
+    <button class="te-travel-btn" id="teTravelBtn" type="button">Trigger Time Travel</button>
     <div class="te-travel-status" id="teStatus" aria-live="polite">Engine running • real time</div>
   </div>
 </div>
@@ -1946,7 +2025,7 @@
 </div>
 
 <!-- 24 FREEZE indicator + JR easter-egg toast -->
-<div class="freeze-chip" id="freezeChip" aria-hidden="true">❄ 24 Freeze — page frozen, watch alive</div>
+<div class="freeze-chip" id="freezeChip" aria-hidden="true">Page frozen — watch still running</div>
 <div class="jr-toast" id="jrToast" role="status">You typed <span>JR</span> — secret unlocked. Techy sees you. 👋</div>
 
 <!-- FLOATING WHATSAPP — Book a Repair -->
@@ -1967,61 +2046,141 @@
     <div class="rd-kicker">// Repair Demo</div>
     <h2>Inside a <span>Repair</span></h2>
     <p class="rd-sub">A full, real teardown — everything comes out one by one, starting with the battery for safety, then it is rebuilt in reverse order, part by part, and powered on. Press play for the real-time show, or tap any step.</p>
-    <div class="rd-phase" id="demoPhase">🔧 DISASSEMBLY</div>
+    <div class="rd-phase" id="demoPhase">DISASSEMBLY</div>
     <div class="td-bench rd-bench" id="demoBench" data-stage="0" aria-hidden="true">
-      <svg class="td-svg" viewBox="0 0 360 230" focusable="false">
+      <svg class="td-svg" viewBox="0 0 360 230" focusable="false" role="img" aria-label="Realistic exploded view of a phone on a repair bench mat">
         <defs>
-          <linearGradient id="rdCover" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d4148"/><stop offset=".55" stop-color="#22252a"/><stop offset="1" stop-color="#141518"/></linearGradient>
-          <linearGradient id="rdBatt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3f47"/><stop offset="1" stop-color="#22252b"/></linearGradient>
-          <pattern id="rdMatGrid" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="rgba(255,255,255,.055)" stroke-width="1"/></pattern>
-          <pattern id="rdMatMeasure" width="90" height="18" patternUnits="userSpaceOnUse"><path d="M0 0v7M45 0v5" stroke="rgba(255,255,255,.14)" stroke-width="1"/></pattern>
+          <linearGradient id="rdCover" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#43464a"/><stop offset=".45" stop-color="#2b2d30"/><stop offset="1" stop-color="#1a1b1d"/></linearGradient>
+          <linearGradient id="rdBatt" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2e3033"/><stop offset=".12" stop-color="#232426"/><stop offset="1" stop-color="#17181a"/></linearGradient>
+          <radialGradient id="rdScrewGrad" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#e8ebee"/><stop offset=".35" stop-color="#aeb4ba"/><stop offset=".7" stop-color="#7d848c"/><stop offset="1" stop-color="#4c5258"/></radialGradient>
+          <linearGradient id="rdSteel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c9ced3"/><stop offset=".5" stop-color="#8f959c"/><stop offset="1" stop-color="#62686f"/></linearGradient>
+          <linearGradient id="rdShieldMetal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b9bec3"/><stop offset=".5" stop-color="#8b9096"/><stop offset="1" stop-color="#6d7278"/></linearGradient>
+          <linearGradient id="rdPCB" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a3d31"/><stop offset="1" stop-color="#1d2c23"/></linearGradient>
+          <radialGradient id="rdLens" cx=".38" cy=".34" r=".85"><stop offset="0" stop-color="#5b7a94"/><stop offset=".35" stop-color="#1c2f42"/><stop offset=".7" stop-color="#0a121c"/><stop offset="1" stop-color="#05080d"/></radialGradient>
+          <radialGradient id="rdBenchLight" cx=".5" cy=".08" r="1.05"><stop offset="0" stop-color="#ffffff" stop-opacity=".10"/><stop offset=".55" stop-color="#ffffff" stop-opacity=".02"/><stop offset="1" stop-color="#000000" stop-opacity=".16"/></radialGradient>
+          <linearGradient id="rdScreen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5568"/><stop offset="1" stop-color="#24343f"/></linearGradient>
+          <pattern id="rdMatGrid" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M18 0H0V18" fill="none" stroke="rgba(255,255,255,.045)" stroke-width="1"/></pattern>
+          <pattern id="rdMatMeasure" width="90" height="18" patternUnits="userSpaceOnUse"><path d="M0 0v7M45 0v5" stroke="rgba(255,255,255,.11)" stroke-width="1"/></pattern>
+          <filter id="rdSoft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter>
         </defs>
-        <!-- OG BENCH MAT — a worn ESD repair mat under everything: dull blue-grey,
-             printed grid + ruler ticks, scuffed corners. Static texture only. -->
-        <rect x="-150" y="-24" width="660" height="278" fill="#2c4a52"/>
+        <!-- Bench mat under bench light: dull ESD mat, printed grid + ruler, worn sheen, vignette -->
+        <rect x="-150" y="-24" width="660" height="278" fill="#314a51"/>
         <rect x="-150" y="-24" width="660" height="278" fill="url(#rdMatGrid)"/>
         <rect x="-150" y="-24" width="660" height="278" fill="url(#rdMatMeasure)"/>
+        <rect x="-150" y="-24" width="660" height="278" fill="url(#rdBenchLight)"/>
         <rect x="-150" y="-24" width="660" height="278" fill="none" stroke="#18282d" stroke-width="3"/>
-        <ellipse cx="52" cy="206" rx="46" ry="10" fill="rgba(0,0,0,.14)"/>
-        <ellipse cx="300" cy="30" rx="52" ry="9" fill="rgba(255,255,255,.045)"/>
-        <!-- Bench tools lying on the mat: steel tweezers + a black pry spudger -->
-        <g aria-hidden="true" opacity=".92">
-          <path d="M30 200 L92 184 M34 208 L94 190" stroke="#8f979e" stroke-width="2.6" stroke-linecap="round" fill="none"/>
-          <path d="M30 200 L24 196 M34 208 L28 210" stroke="#6d747a" stroke-width="2.2" stroke-linecap="round"/>
-          <rect x="86" y="180" width="16" height="7" rx="2" transform="rotate(-13 94 183)" fill="#5c646a"/>
+        <!-- Contact shadows: soft, offset down-right as under a bench lamp -->
+        <ellipse cx="184" cy="222" rx="62" ry="7" fill="rgba(0,0,0,.34)" filter="url(#rdSoft)"/>
+        <ellipse cx="52" cy="208" rx="44" ry="8" fill="rgba(0,0,0,.16)" filter="url(#rdSoft)"/>
+        <!-- Steel tweezers lying on the mat -->
+        <g aria-hidden="true" opacity=".95">
+          <path d="M28 201 L92 185" stroke="url(#rdSteel)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M32 209 L94 191" stroke="#7e858c" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M28 201 L22 197 M32 209 L26 211" stroke="#5d646a" stroke-width="2" stroke-linecap="round"/>
+          <rect x="86" y="181" width="15" height="6.5" rx="2" transform="rotate(-13 94 183)" fill="#565d63"/>
         </g>
-        <g aria-hidden="true" opacity=".92">
-          <rect x="36" y="24" width="52" height="8" rx="4" transform="rotate(24 62 28)" fill="#1d1f21" stroke="#45484c" stroke-width=".8"/>
-          <path d="M84 42 l14 8 -4 6 -12 -6 z" fill="#33363a"/>
+        <!-- Matte black pry spudger -->
+        <g aria-hidden="true" opacity=".95">
+          <rect x="36" y="24" width="52" height="7.5" rx="3.5" transform="rotate(24 62 28)" fill="#1e2022" stroke="#3f4246" stroke-width=".7"/>
+          <path d="M84 42 l13 7.5 -3.5 5.5 -11.5 -5.5 z" fill="#2e3134"/>
         </g>
-        <rect class="td-tray" x="316" y="26" width="34" height="150" rx="10"/><path d="M316 76h34M316 126h34" stroke="#6d7278" stroke-width="1" fill="none"/><g fill="#aeb4ba" stroke="#565d63" stroke-width=".7"><circle cx="326" cy="42" r="2.6"/><circle cx="340" cy="56" r="2.6"/><circle cx="333" cy="94" r="2.6"/><circle cx="326" cy="142" r="2.6"/><circle cx="341" cy="158" r="2.6"/></g><text class="td-tray-label" x="333" y="194" text-anchor="middle">SCREWS</text>
-        <text class="td-part-label" x="180" y="226" text-anchor="middle">EXPLODED VIEW — PARTS OUT ONE BY ONE · BACK IN REVERSE ORDER</text>
-        <rect x="130" y="12" width="100" height="206" rx="14" fill="#111827" stroke="#374151" stroke-width="2"/>
-        <rect x="136" y="18" width="88" height="194" rx="8" fill="#10151f"/>
-        <!-- CAMERA -->
-        <g class="p-camera"><rect x="140" y="22" width="30" height="30" rx="8" fill="#1f2937" stroke="#94a3b8" stroke-width="1"/><circle cx="150" cy="32" r="5" fill="#0b1220" stroke="#9ca3af"/><circle cx="150" cy="44" r="5" fill="#0b1220" stroke="#9ca3af"/><text class="td-part-label" x="155" y="60" text-anchor="middle">CAMERA</text></g>
-        <!-- BOARD + SHIELD -->
-        <g class="p-board"><rect x="176" y="22" width="42" height="86" rx="4" fill="#22452f" stroke="#7d9b84" stroke-width="1"/><rect x="182" y="30" width="18" height="18" fill="#111827" stroke="#a7f3d0" stroke-width=".7"/><rect x="204" y="30" width="10" height="10" fill="#374151"/><rect x="182" y="54" width="12" height="12" fill="#1f2937"/><rect x="198" y="54" width="14" height="22" fill="#111827" stroke="#64748b" stroke-width=".6"/><g fill="#facc15"><circle cx="186" cy="84" r="1.6"/><circle cx="194" cy="84" r="1.6"/><circle cx="202" cy="84" r="1.6"/><circle cx="210" cy="84" r="1.6"/></g><text class="td-part-label" x="197" y="102" text-anchor="middle">LOGIC BOARD</text></g>
-        <g class="p-shield"><rect x="174" y="20" width="46" height="16" rx="3" fill="#9ca3af" stroke="#e5e7eb" stroke-width=".8" opacity=".92"/><text x="197" y="30" text-anchor="middle" font-size="5.5" fill="#111827" font-weight="700">SHIELD</text></g>
-        <!-- BATTERY -->
-        <g class="p-battery"><rect x="140" y="66" width="52" height="92" rx="4" fill="url(#rdBatt)" stroke="#6b7280" stroke-width="1.1"/><text x="166" y="80" text-anchor="middle" font-size="6" fill="#e5e7eb" font-weight="700">Li-ion Battery</text><text x="166" y="90" text-anchor="middle" font-size="5" fill="#9ca3af">3.81V · 10.35Whr</text><text x="166" y="102" text-anchor="middle" font-size="5.5" fill="#fbbf24">⚠ WARNING</text><text x="166" y="114" text-anchor="middle" font-size="4.6" fill="#9ca3af">Authorized Service Only</text><text x="166" y="126" text-anchor="middle" font-size="6" fill="#d1d5db">♻ Li-ion · 2716mAh</text><text x="166" y="140" text-anchor="middle" font-size="4.4" fill="#6b7280">Do not puncture / crush</text></g>
-        <g class="p-battshield"><rect x="140" y="62" width="52" height="10" rx="2" fill="#6b7280" stroke="#d1d5db" stroke-width=".7"/><circle cx="146" cy="67" r="1.8" fill="#111827"/><circle cx="186" cy="67" r="1.8" fill="#111827"/></g>
-        <!-- FLEX RIBBONS -->
-        <g class="p-flex2" fill="none" stroke-width="2" stroke-linecap="round"><path d="M192 92 C 204 98, 210 104, 220 104" stroke="#c08a3e"/><path d="M192 96 C 204 102, 210 108, 220 108" stroke="#a97a34"/><path d="M192 100 C 204 106, 210 112, 220 112" stroke="#8f6b2f"/><path d="M192 104 C 204 110, 210 116, 220 116" stroke="#bd7f36"/></g>
-        <path class="td-glowline" d="M194 64 V158" stroke="#c47b2d" stroke-width="1.8" fill="none"/>
-        <!-- TAPTIC + SPEAKER + CHARGE -->
-        <g class="p-taptic"><rect x="140" y="164" width="44" height="18" rx="3" fill="#151a24" stroke="#4b5563"/><text x="162" y="175" text-anchor="middle" font-size="5" letter-spacing=".5" fill="#d1d5db">TAPTIC ENGINE</text></g>
-        <g class="p-speaker"><rect x="188" y="164" width="32" height="18" rx="3" fill="#9aa3ad"/><g fill="#374151"><circle cx="196" cy="173" r="1.6"/><circle cx="204" cy="173" r="1.6"/><circle cx="212" cy="173" r="1.6"/></g><text class="td-part-label" x="204" y="190" text-anchor="middle">SPEAKER</text></g>
-        <g class="p-charge"><rect x="158" y="192" width="44" height="12" rx="3" fill="#1f2937"/><rect x="172" y="195" width="16" height="5" rx="2" fill="#b07d2b"/><text class="td-part-label" x="180" y="212" text-anchor="middle">CHARGING / DISPLAY FLEX</text></g>
-        <g class="p-power"><rect x="140" y="26" width="80" height="170" rx="6" fill="#4a7d96" opacity=".95"/><text x="180" y="104" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="16" fill="#fff" font-weight="700">9:41</text><text x="180" y="126" text-anchor="middle" font-size="7" fill="#dbe9ef">POWER ON ✓</text><text x="180" y="140" text-anchor="middle" font-size="6" fill="#dbe9ef">ALL TESTS PASSED</text></g>
-        <!-- COVER -->
-        <g class="td-cover p-cover2"><rect x="130" y="12" width="100" height="206" rx="14" fill="url(#rdCover)" stroke="#64748b" stroke-width="1.6"/><rect x="140" y="22" width="32" height="48" rx="10" fill="rgba(255,255,255,.07)" stroke="rgba(255,255,255,.28)"/><circle cx="156" cy="34" r="6" fill="#0b1220" stroke="#9ca3af"/><circle cx="156" cy="52" r="6" fill="#0b1220" stroke="#9ca3af"/><text x="180" y="150" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" letter-spacing="3" fill="rgba(255,255,255,.5)">TECHY</text><text x="180" y="168" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" letter-spacing="1.6" fill="rgba(255,255,255,.32)">JR SERIES</text></g>
-        <g class="td-screw sc1"><circle cx="140" cy="22" r="5"/><path d="M137.2 22h5.6M140 19.2v5.6"/></g>
-        <g class="td-screw sc2"><circle cx="220" cy="22" r="5"/><path d="M217.2 22h5.6M220 19.2v5.6"/></g>
-        <g class="td-screw sc3"><circle cx="140" cy="208" r="5"/><path d="M137.2 208h5.6M140 205.2v5.6"/></g>
-        <g class="td-screw sc4"><circle cx="220" cy="208" r="5"/><path d="M217.2 208h5.6M220 205.2v5.6"/></g>
-        <g class="td-driver" aria-hidden="true"><rect x="18" y="44" width="17" height="47" rx="8" fill="#c07f24" stroke="#8a5a14" stroke-width="1.6"/><rect x="22" y="52" width="9" height="5" rx="2.5" fill="rgba(120,53,15,.45)"/><rect x="22" y="62" width="9" height="5" rx="2.5" fill="rgba(120,53,15,.45)"/><rect x="25" y="91" width="3.4" height="25" fill="#9ca3af"/><path d="M23.6 116 h6.2 l-3.1 9 z" fill="#6b7280"/></g>
-        <g class="td-done"><circle cx="238" cy="196" r="17" fill="#4c7a3f" stroke="#cfe0c2" stroke-width="2.5"/><path d="M229 196l6 6 12-13" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+        <!-- Magnetic screw tray: machined steel, three compartments, loose screws with Phillips recesses -->
+        <rect class="td-tray" x="316" y="26" width="34" height="150" rx="7"/>
+        <path d="M316 76h34M316 126h34" stroke="#565c62" stroke-width="1" fill="none"/>
+        <g><circle cx="327" cy="43" r="2.7" fill="url(#rdScrewGrad)" stroke="#43484d" stroke-width=".5"/><path d="M325.6 43h2.8M327 41.6v2.8" stroke="#2c3034" stroke-width=".7"/></g>
+        <g><circle cx="340" cy="57" r="2.7" fill="url(#rdScrewGrad)" stroke="#43484d" stroke-width=".5"/><path d="M338.6 57h2.8M340 55.6v2.8" stroke="#2c3034" stroke-width=".7"/></g>
+        <g><circle cx="333" cy="95" r="2.7" fill="url(#rdScrewGrad)" stroke="#43484d" stroke-width=".5"/><path d="M331.6 95h2.8M333 93.6v2.8" stroke="#2c3034" stroke-width=".7"/></g>
+        <g><circle cx="326" cy="143" r="2.7" fill="url(#rdScrewGrad)" stroke="#43484d" stroke-width=".5"/><path d="M324.6 143h2.8M326 141.6v2.8" stroke="#2c3034" stroke-width=".7"/></g>
+        <g><circle cx="341" cy="159" r="2.7" fill="url(#rdScrewGrad)" stroke="#43484d" stroke-width=".5"/><path d="M339.6 159h2.8M341 157.6v2.8" stroke="#2c3034" stroke-width=".7"/></g>
+        <text class="td-tray-label" x="333" y="194" text-anchor="middle">SCREWS</text>
+        <text class="td-part-label" x="180" y="227" text-anchor="middle">EXPLODED VIEW — PARTS OUT ONE BY ONE · BACK IN REVERSE ORDER</text>
+        <!-- Phone frame / chassis: machined aluminium edge, antenna bands, inner cavity -->
+        <rect x="130" y="12" width="100" height="206" rx="13" fill="#3a3d40" stroke="#141518" stroke-width="1.6"/>
+        <rect x="133" y="15" width="94" height="200" rx="10" fill="#202226"/>
+        <rect x="136" y="18" width="88" height="194" rx="7" fill="#191b1e"/>
+        <path d="M130 52h100M130 178h100" stroke="rgba(255,255,255,.10)" stroke-width="1.4"/>
+        <circle cx="139" cy="21" r="1.4" fill="#0c0d0e"/><circle cx="221" cy="21" r="1.4" fill="#0c0d0e"/><circle cx="139" cy="209" r="1.4" fill="#0c0d0e"/><circle cx="221" cy="209" r="1.4" fill="#0c0d0e"/>
+        <!-- CAMERA MODULE: metal housing, two real lenses (ring + glass + highlight), flash, mic hole -->
+        <g class="p-camera">
+          <rect x="140" y="22" width="30" height="30" rx="6" fill="#26282b" stroke="#4a4e52" stroke-width=".8"/>
+          <rect x="142" y="24" width="26" height="26" rx="5" fill="none" stroke="rgba(255,255,255,.07)" stroke-width=".7"/>
+          <circle cx="150" cy="32" r="5.2" fill="#101216" stroke="#6d7278" stroke-width="1"/><circle cx="150" cy="32" r="3.4" fill="url(#rdLens)"/><circle cx="148.7" cy="30.6" r="1" fill="rgba(255,255,255,.65)"/>
+          <circle cx="150" cy="44" r="5.2" fill="#101216" stroke="#6d7278" stroke-width="1"/><circle cx="150" cy="44" r="3.4" fill="url(#rdLens)"/><circle cx="148.7" cy="42.6" r="1" fill="rgba(255,255,255,.65)"/>
+          <circle cx="163" cy="32" r="2.1" fill="#c9b98a" stroke="#7a6f4e" stroke-width=".6"/><circle cx="163" cy="44" r=".9" fill="#0c0d0e"/>
+          <text class="td-part-label" x="155" y="60" text-anchor="middle">CAMERA</text>
+        </g>
+        <!-- LOGIC BOARD: matte PCB, etched traces, shield cans, SoC, caps, resistors, connector pins -->
+        <g class="p-board">
+          <rect x="176" y="22" width="42" height="86" rx="3" fill="url(#rdPCB)" stroke="#46584a" stroke-width=".8"/>
+          <path d="M180 48h14l6 6v14M214 44v22l-6 6h-12M182 96h30M208 30v10" stroke="rgba(190,205,180,.20)" stroke-width=".7" fill="none"/>
+          <path d="M180 62h10M204 78h10M186 104h24" stroke="rgba(190,205,180,.14)" stroke-width=".7" fill="none"/>
+          <rect x="181" y="28" width="17" height="17" fill="#141518" stroke="#3f4448" stroke-width=".6"/>
+          <text x="189.5" y="35" text-anchor="middle" font-size="3.2" fill="#8d939a">A-SERIES</text><text x="189.5" y="39.5" text-anchor="middle" font-size="2.8" fill="#6d737a">SOC · 339S</text>
+          <rect x="201" y="28" width="13" height="13" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".5"/>
+          <rect x="181" y="49" width="11" height="11" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".5"/>
+          <rect x="195" y="49" width="17" height="24" fill="#191a1c" stroke="#43474b" stroke-width=".5"/>
+          <g fill="#2c2e30" stroke="#4a4e52" stroke-width=".4"><rect x="182" y="63" width="4" height="2.4"/><rect x="188" y="63" width="4" height="2.4"/><rect x="182" y="67" width="4" height="2.4"/><rect x="188" y="67" width="4" height="2.4"/><rect x="182" y="71" width="4" height="2.4"/><rect x="188" y="71" width="4" height="2.4"/></g>
+          <g fill="#8f7c46"><rect x="183" y="82" width="3.4" height="4"/><rect x="189" y="82" width="3.4" height="4"/><rect x="195" y="82" width="3.4" height="4"/><rect x="201" y="82" width="3.4" height="4"/><rect x="207" y="82" width="3.4" height="4"/></g>
+          <g fill="#b9bec3"><circle cx="185" cy="92" r="1.1"/><circle cx="192" cy="92" r="1.1"/><circle cx="199" cy="92" r="1.1"/><circle cx="206" cy="92" r="1.1"/></g>
+          <text class="td-part-label" x="197" y="103" text-anchor="middle">LOGIC BOARD</text>
+        </g>
+        <g class="p-shield"><rect x="174" y="20" width="46" height="16" rx="2.5" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".7"/><path d="M178 24h38M178 32h38" stroke="rgba(0,0,0,.10)" stroke-width=".6"/><circle cx="178" cy="24" r="1.3" fill="#33373b"/><circle cx="216" cy="24" r="1.3" fill="#33373b"/><circle cx="178" cy="32" r="1.3" fill="#33373b"/><circle cx="216" cy="32" r="1.3" fill="#33373b"/><text x="197" y="30.5" text-anchor="middle" font-size="5" fill="#26292c" font-weight="700" letter-spacing=".6">SHIELD</text></g>
+        <!-- BATTERY: matte black pouch cell, seam, full fine print, barcode, pull tabs -->
+        <g class="p-battery">
+          <rect x="140" y="66" width="52" height="92" rx="3.5" fill="url(#rdBatt)" stroke="#0b0c0d" stroke-width="1"/>
+          <rect x="142" y="68" width="48" height="88" rx="2.5" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".7"/>
+          <path d="M140 74h52" stroke="rgba(255,255,255,.10)" stroke-width=".8"/>
+          <text x="166" y="83" text-anchor="middle" font-size="5.6" fill="#c6c9cc" font-weight="700">Li-ion Battery</text>
+          <text x="166" y="89.5" text-anchor="middle" font-size="4.4" fill="#9ea3a8">3.81V == 10.35Whr</text>
+          <text x="166" y="95" text-anchor="middle" font-size="4" fill="#878d93">APN: 616-00351</text>
+          <rect x="148" y="99" width="36" height="7.5" fill="none" stroke="#8a7a4e" stroke-width=".6"/>
+          <text x="166" y="104.8" text-anchor="middle" font-size="4.2" fill="#c2b283" font-weight="700">! WARNING</text>
+          <text x="166" y="112" text-anchor="middle" font-size="3.7" fill="#9ea3a8">Authorized Service Provider Only</text>
+          <text x="166" y="117" text-anchor="middle" font-size="3.7" fill="#878d93">Potential for fire or burning.</text>
+          <text x="166" y="122" text-anchor="middle" font-size="3.7" fill="#878d93">Do not disassemble, puncture,</text>
+          <text x="166" y="127" text-anchor="middle" font-size="3.7" fill="#878d93">crush, heat, or burn.</text>
+          <g fill="#c6c9cc"><rect x="150" y="132" width="1.2" height="7"/><rect x="152.4" y="132" width=".7" height="7"/><rect x="154.2" y="132" width="1.6" height="7"/><rect x="157" y="132" width=".7" height="7"/><rect x="158.8" y="132" width="1.2" height="7"/><rect x="161.2" y="132" width=".7" height="7"/><rect x="163" y="132" width="1.5" height="7"/><rect x="165.8" y="132" width=".7" height="7"/><rect x="167.6" y="132" width="1.2" height="7"/><rect x="170" y="132" width=".7" height="7"/><rect x="171.8" y="132" width="1.4" height="7"/><rect x="174.4" y="132" width=".7" height="7"/><rect x="176.2" y="132" width="1.2" height="7"/><rect x="178.6" y="132" width=".8" height="7"/></g>
+          <text x="166" y="146" text-anchor="middle" font-size="4.6" fill="#b4b8bc">Li-ion · 2716mAh</text>
+          <text x="166" y="152" text-anchor="middle" font-size="3.6" fill="#6f757b">MH45584 · Assembled — handle with care</text>
+          <rect x="146" y="156" width="9" height="4" fill="rgba(210,215,220,.28)"/><rect x="177" y="156" width="9" height="4" fill="rgba(210,215,220,.28)"/>
+        </g>
+        <g class="p-battshield"><rect x="140" y="62" width="52" height="10" rx="2" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".6"/><circle cx="146" cy="67" r="1.7" fill="#26292c"/><circle cx="186" cy="67" r="1.7" fill="#26292c"/><path d="M144.8 67h2.4M146 65.8v2.4M184.8 67h2.4M186 65.8v2.4" stroke="#0f1112" stroke-width=".6"/></g>
+        <!-- FLEX RIBBONS: dull copper laminate with connector ends, no glow -->
+        <g class="p-flex2" fill="none" stroke-linecap="round"><path d="M192 92 C 204 98, 210 104, 220 104" stroke="#8f683c" stroke-width="1.7"/><path d="M192 96 C 204 102, 210 108, 220 108" stroke="#7d5c33" stroke-width="1.7"/><path d="M192 100 C 204 106, 210 112, 220 112" stroke="#97703d" stroke-width="1.7"/><path d="M192 104 C 204 110, 210 116, 220 116" stroke="#755831" stroke-width="1.7"/><rect x="218" y="102" width="5" height="15" fill="#a8894e" stroke="#6d5a33" stroke-width=".5"/></g>
+        <path class="td-glowline" d="M194 64 V158" stroke="#7d5c33" stroke-width="1.3" fill="none"/>
+        <!-- TAPTIC ENGINE: dark steel block, engraved label, end screws -->
+        <g class="p-taptic"><rect x="140" y="164" width="44" height="18" rx="2.5" fill="#1d1f22" stroke="#4a4e52" stroke-width=".7"/><rect x="142" y="166" width="40" height="14" rx="2" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".6"/><text x="162" y="175.5" text-anchor="middle" font-size="4.8" letter-spacing=".6" fill="#aeb3b8">TAPTIC ENGINE</text></g>
+        <!-- SPEAKER: steel enclosure with a real mesh of punched holes -->
+        <g class="p-speaker"><rect x="188" y="164" width="32" height="18" rx="2.5" fill="#7e848a" stroke="#4c5054" stroke-width=".7"/><rect x="190" y="166" width="28" height="14" rx="2" fill="#6a6f75"/><g fill="#2e3236"><circle cx="195" cy="170" r="1.15"/><circle cx="200" cy="170" r="1.15"/><circle cx="205" cy="170" r="1.15"/><circle cx="210" cy="170" r="1.15"/><circle cx="215" cy="170" r="1.15"/><circle cx="195" cy="175" r="1.15"/><circle cx="200" cy="175" r="1.15"/><circle cx="205" cy="175" r="1.15"/><circle cx="210" cy="175" r="1.15"/><circle cx="215" cy="175" r="1.15"/></g><text class="td-part-label" x="204" y="190" text-anchor="middle">SPEAKER</text></g>
+        <!-- CHARGING / DISPLAY FLEX board: small dark PCB, USB-C port, gold pins -->
+        <g class="p-charge"><rect x="158" y="192" width="44" height="12" rx="2.5" fill="#232a26" stroke="#46584a" stroke-width=".6"/><rect x="172" y="195" width="16" height="5.5" rx="2.7" fill="#101214" stroke="#8f959c" stroke-width=".7"/><rect x="176" y="197" width="8" height="1.6" fill="#8f7c46"/><circle cx="162" cy="198" r="1.2" fill="#0c0d0e"/><circle cx="198" cy="198" r="1.2" fill="#0c0d0e"/><text class="td-part-label" x="180" y="212" text-anchor="middle">CHARGING / DISPLAY FLEX</text></g>
+        <!-- POWER-ON screen: muted display, no cartoon check badge -->
+        <g class="p-power"><rect x="140" y="26" width="80" height="170" rx="6" fill="url(#rdScreen)"/><rect x="140" y="26" width="80" height="170" rx="6" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".8"/><text x="180" y="104" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="16" fill="#eef3f5" font-weight="700">9:41</text><text x="180" y="126" text-anchor="middle" font-size="7" letter-spacing="1.4" fill="#cfdde5">POWER ON</text><text x="180" y="140" text-anchor="middle" font-size="6" letter-spacing="1" fill="#a9bcc6">ALL TESTS PASSED</text></g>
+        <!-- BACK COVER: matte graphite glass, soft lamp reflection, realistic camera plateau -->
+        <g class="td-cover p-cover2">
+          <rect x="130" y="12" width="100" height="206" rx="13" fill="url(#rdCover)" stroke="#101214" stroke-width="1.4"/>
+          <path d="M136 20 L196 12 L150 218 L134 218 Z" fill="rgba(255,255,255,.045)"/>
+          <rect x="140" y="22" width="32" height="48" rx="9" fill="rgba(255,255,255,.05)" stroke="rgba(255,255,255,.16)" stroke-width=".8"/>
+          <circle cx="156" cy="34" r="6.2" fill="#0d0f12" stroke="#6d7278" stroke-width="1.1"/><circle cx="156" cy="34" r="4" fill="url(#rdLens)"/><circle cx="154.4" cy="32.4" r="1.1" fill="rgba(255,255,255,.6)"/>
+          <circle cx="156" cy="52" r="6.2" fill="#0d0f12" stroke="#6d7278" stroke-width="1.1"/><circle cx="156" cy="52" r="4" fill="url(#rdLens)"/><circle cx="154.4" cy="50.4" r="1.1" fill="rgba(255,255,255,.6)"/>
+          <text x="180" y="150" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="3" fill="rgba(255,255,255,.34)">TECHY</text>
+          <text x="180" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="6.5" letter-spacing="1.6" fill="rgba(255,255,255,.20)">JR SERIES</text>
+        </g>
+        <!-- Pentalobe-style screws: shaded metal heads, dark Phillips recess, specular highlight -->
+        <g class="td-screw sc1"><circle cx="140" cy="22" r="5" fill="url(#rdScrewGrad)"/><path d="M137.4 22h5.2M140 19.4v5.2"/><circle cx="138.4" cy="20.4" r="1.3" fill="rgba(255,255,255,.55)"/></g>
+        <g class="td-screw sc2"><circle cx="220" cy="22" r="5" fill="url(#rdScrewGrad)"/><path d="M217.4 22h5.2M220 19.4v5.2"/><circle cx="218.4" cy="20.4" r="1.3" fill="rgba(255,255,255,.55)"/></g>
+        <g class="td-screw sc3"><circle cx="140" cy="208" r="5" fill="url(#rdScrewGrad)"/><path d="M137.4 208h5.2M140 205.4v5.2"/><circle cx="138.4" cy="206.4" r="1.3" fill="rgba(255,255,255,.55)"/></g>
+        <g class="td-screw sc4"><circle cx="220" cy="208" r="5" fill="url(#rdScrewGrad)"/><path d="M217.4 208h5.2M220 205.4v5.2"/><circle cx="218.4" cy="206.4" r="1.3" fill="rgba(255,255,255,.55)"/></g>
+        <!-- Precision screwdriver: matte charcoal handle with grip ribs, steel shaft, Phillips tip + shadow -->
+        <g class="td-driver" aria-hidden="true">
+          <ellipse cx="30" cy="128" rx="16" ry="3.4" fill="rgba(0,0,0,.28)" filter="url(#rdSoft)"/>
+          <rect x="18" y="44" width="17" height="47" rx="7" fill="#26282a" stroke="#101214" stroke-width="1.2"/>
+          <rect x="22" y="52" width="9" height="4.5" rx="2.2" fill="rgba(255,255,255,.10)"/><rect x="22" y="61" width="9" height="4.5" rx="2.2" fill="rgba(255,255,255,.08)"/><rect x="22" y="70" width="9" height="4.5" rx="2.2" fill="rgba(255,255,255,.06)"/>
+          <rect x="25" y="91" width="3.4" height="25" fill="url(#rdSteel)"/>
+          <path d="M23.6 116 h6.2 l-3.1 9 z" fill="#5d646a"/>
+        </g>
+        <!-- Done stamp: muted, stamped-metal look (no bright toy green) -->
+        <g class="td-done"><circle cx="238" cy="196" r="16" fill="#39443a" stroke="#9aa78f" stroke-width="1.4"/><circle cx="238" cy="196" r="13.5" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".8"/><path d="M230 196l5.5 5.5 11-12" stroke="#dde3d5" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
       </svg>
     </div>
     <div class="rd-caption" aria-live="polite"><b id="demoCapTitle">Your phone, as it arrives</b><span id="demoCapText">Sealed and whole — exactly how you hand it over at the shop.</span></div>
@@ -2642,24 +2801,42 @@
     /* TIME CONTROL state — in the spirit of the watch in '24': a manual offset you can
        drag/jump, a freeze that stops the second hand AND every animation on the page,
        and a timezone selector. Closing the engine resets all of it to real local time. */
-    var offsetMs = 0, frozen = false, frozenDate = null, tz = 'local';
+    var offsetMs = 0, offsetTargetMs = 0, frozen = false, tz = 'local';
+    var tzFmtCache = {};
+    function tzFmt(){
+      if(tz in tzFmtCache) return tzFmtCache[tz];
+      var f = null;
+      try{ f = new Intl.DateTimeFormat('en-GB', {timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, weekday:'short', day:'2-digit', month:'short', year:'numeric'}); }catch(e){}
+      tzFmtCache[tz] = f;
+      return f;
+    }
+    var teSyncEl = document.getElementById('teSync');
+    var lastSyncSec = -1;
     var tweenId = null, demoToken = 0, demoTimers = [];
     function cancelFx(){
       demoToken++;
       demoTimers.forEach(function(t){ clearTimeout(t); });
       demoTimers = [];
-      if(tweenId){ cancelAnimationFrame(tweenId); tweenId = null; }
+      if(tweenId){ cancelAnimationFrame(tweenId); tweenId = null; offsetTargetMs = offsetMs; }
     }
+    /* THE INSTANT — every readout (hands, sub-dials, digital, holo, TOD
+       background and the world map) is derived from this one value per tick,
+       so nothing can drift apart. FREEZE never touches it: freezing pauses
+       the PAGE, the watch itself keeps running on this instant. */
     function shownDate(){
-      if(frozen && frozenDate) return new Date(frozenDate.getTime());
       var d = new Date(Date.now() + offsetMs);
-      if(traveling) d = new Date(d.getTime() + (Date.now() - travelStart) * 48);
+      if(traveling){
+        var pr = Math.min(1, (Date.now() - travelStart) / 2500);
+        d = new Date(d.getTime() + Math.sin(pr * Math.PI) * 3600000);
+      }
       return d;
     }
+    window.__teShownDate = shownDate;
     function zoneParts(d){
       if(tz === 'local') return {h:d.getHours(), m:d.getMinutes(), s:d.getSeconds(), ms:d.getMilliseconds(), label:dateFmt.format(d)};
       try{
-        var f = new Intl.DateTimeFormat('en-GB', {timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false, weekday:'short', day:'2-digit', month:'short', year:'numeric'});
+        var f = tzFmt();
+        if(!f) throw new Error('no tz');
         var parts = {}, arr = f.formatToParts(d);
         for(var i = 0; i < arr.length; i++) parts[arr[i].type] = arr[i].value;
         return {h:parseInt(parts.hour, 10) % 24, m:parseInt(parts.minute, 10), s:parseInt(parts.second, 10), ms:d.getMilliseconds(), label:parts.weekday + ', ' + parts.day + ' ' + parts.month + ' ' + parts.year};
@@ -2700,7 +2877,7 @@
     }
     function setStatus(t){ if(teStatus) teStatus.textContent = t; }
     function stateStatus(){
-      if(frozen) return '\u23F8 Time frozen \u2014 the whole page is paused';
+      if(frozen) return '\u2744 Page frozen \u2014 this watch keeps running';
       var bits = [];
       if(offsetMs !== 0) bits.push('Shifted ' + offsetLabel().replace('\u25F7 ', ''));
       if(tz !== 'local') bits.push(tzShort() + ' time');
@@ -2740,9 +2917,15 @@
       timeEl.textContent = timeFmt.format(real).toUpperCase();
       dateEl.textContent = dateFmt.format(real);
       setHandsP(hourG, minG, secG, 50, {h:real.getHours(), m:real.getMinutes(), s:real.getSeconds(), ms:real.getMilliseconds()});
-      var p = zoneParts(shownDate());
+      var inst = shownDate();
+      var p = zoneParts(inst);
       if(teTime) teTime.textContent = fmtTime(p);
-      if(teDate) teDate.textContent = p.label + (frozen ? '  \u2022  \u23F8 FROZEN' : ((offsetMs !== 0 || tz !== 'local') ? '  \u2022  TIME CONTROL' : ''));
+      if(teDate) teDate.textContent = p.label + (frozen ? '  \u2022  PAGE FROZEN \u00B7 WATCH RUNNING' : ((offsetMs !== 0 || tz !== 'local') ? '  \u2022  TIME CONTROL' : ''));
+      if(teSyncEl && p.s !== lastSyncSec){
+        lastSyncSec = p.s;
+        var utcH = inst.getUTCHours(), utcM = inst.getUTCMinutes();
+        teSyncEl.textContent = 'Synced \u00B7 ' + (tz === 'local' ? 'Local time' : tzShort() + ' time') + ' \u00B7 UTC ' + (utcH < 10 ? '0' : '') + utcH + ':' + (utcM < 10 ? '0' : '') + utcM + (offsetMs !== 0 ? ' \u00B7 shift ' + (offsetLabel().replace('\u25F7 ', '') || '0m') : ' \u00B7 real time') + (frozen ? ' \u00B7 page frozen, watch running' : '');
+      }
       if(teMs){ var ms = String(p.ms); while(ms.length < 3) ms = '0' + ms; teMs.textContent = ms; }
       setHandsP(teHour, teMin, teSec, 100, p);
       /* Steampunk watch extras: the three sub-dials (SEC / MIN / HRS) and the
@@ -2757,16 +2940,20 @@
       applyTod(p);
       /* WORLD MAP backdrop — day/night terminator for the displayed instant
          (defined in the last script block; throttled inside, watch untouched) */
-      if(window.__teMapDraw) window.__teMapDraw(shownDate());
+      if(window.__teMapDraw) window.__teMapDraw(inst);
     }
+    /* Tween to an EXACT target: the target is stored first (so rapid
+       Forward/Rewind taps accumulate on the target, never on a mid-flight
+       interpolated value) and the last frame snaps precisely onto it. */
     function tweenOffset(to, dur, done){
+      offsetTargetMs = to;
       if(tweenId) cancelAnimationFrame(tweenId);
       if(reduce || !dur){ offsetMs = to; tick(); if(done) done(); return; }
       var from = offsetMs, start = null;
       function step(ts){
         if(!start) start = ts;
         var t = Math.min(1, (ts - start) / dur), e = 1 - Math.pow(1 - t, 3);
-        offsetMs = Math.round(from + (to - from) * e);
+        offsetMs = (t >= 1) ? to : from + (to - from) * e;
         tick();
         if(t < 1) tweenId = requestAnimationFrame(step);
         else { tweenId = null; if(done) done(); }
@@ -2788,35 +2975,39 @@
       }, 2500);
       tick();
     }
+    /* FREEZE — pauses EVERY animation on the page (one unified state:
+       body.time-frozen + body.page-frozen, with the Clock Engine itself
+       exempt in CSS) and shows the freeze chip. The watch is NOT held:
+       shownDate() keeps advancing, so hands, digital, map and background
+       keep running live while the rest of the page stands still. */
     function setFrozen(on){
       if(on === frozen) return;
-      if(on){
-        frozenDate = shownDate();
-        frozen = true;
-        document.body.classList.add('time-frozen');
-        if(engine) engine.classList.add('frozen');
-      } else {
-        frozen = false; frozenDate = null;
-        document.body.classList.remove('time-frozen');
-        if(engine) engine.classList.remove('frozen');
-      }
+      frozen = on;
+      document.body.classList.toggle('time-frozen', on);
+      document.body.classList.toggle('page-frozen', on);
+      if(engine){ engine.classList.toggle('frozen', on); engine.classList.toggle('page-frozen', on); }
+      var chip = document.getElementById('freezeChip');
+      if(chip){ chip.classList.toggle('show', on); chip.setAttribute('aria-hidden', on ? 'false' : 'true'); }
       if(freezeBtn){
-        freezeBtn.classList.toggle('is-frozen', frozen);
-        freezeBtn.setAttribute('aria-pressed', frozen ? 'true' : 'false');
-        freezeBtn.textContent = frozen ? '\u25B6 Resume' : '\u23F8 Freeze';
+        freezeBtn.classList.toggle('is-frozen', on);
+        freezeBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        freezeBtn.textContent = on ? '\u25B6 Resume' : '\u2744 Freeze page';
       }
       setStatus(stateStatus());
       tick();
     }
+    window.__teSetFrozen = setFrozen;
+    window.__teIsFrozen = function(){ return frozen; };
     function resetControl(){
       cancelFx();
       traveling = false;
       clearTimeout(travelTimer);
-      document.body.classList.remove('page-frozen');
+      if(frozen) setFrozen(false);
+      document.body.classList.remove('page-frozen', 'time-frozen');
       var fc0 = document.getElementById('freezeChip');
       if(fc0) fc0.classList.remove('show');
-      if(engine) engine.classList.remove('traveling', 'page-frozen');
-      offsetMs = 0; tz = 'local';
+      if(engine) engine.classList.remove('traveling', 'page-frozen', 'frozen');
+      offsetMs = 0; offsetTargetMs = 0; tz = 'local';
       if(tzSel) tzSel.value = 'local';
       if(frozen) setFrozen(false);
     }
@@ -2870,23 +3061,26 @@
     if(fwdBtn) fwdBtn.addEventListener('click', function(){
       cancelFx();
       if(frozen) setFrozen(false);
-      setStatus('\u23E9 Forward +1 hour\u2026');
-      tweenOffset(offsetMs + 3600000, 750, function(){ setStatus(stateStatus()); });
+      setStatus('Forward \u2014 exactly +1 hour\u2026');
+      tweenOffset(offsetTargetMs + 3600000, 750, function(){ setStatus(stateStatus()); });
     });
     if(rewBtn) rewBtn.addEventListener('click', function(){
       cancelFx();
       if(frozen) setFrozen(false);
-      setStatus('\u23EA Rewinding \u22121 hour\u2026');
-      tweenOffset(offsetMs - 3600000, 750, function(){ setStatus(stateStatus()); });
+      setStatus('Rewind \u2014 exactly \u22121 hour\u2026');
+      tweenOffset(offsetTargetMs - 3600000, 750, function(){ setStatus(stateStatus()); });
     });
     if(freezeBtn) freezeBtn.addEventListener('click', function(){
       cancelFx();
       setFrozen(!frozen);
     });
     if(tzSel) tzSel.addEventListener('change', function(){
-      cancelFx();
-      if(frozen) setFrozen(false);
+      /* Switching zone converts the SAME instant — offset/target are
+         untouched, only the wall-clock reading changes. The map is drawn
+         from the UTC instant, so it stays correct; force one redraw so
+         dial, digital, TOD background and map land together. */
       tz = tzSel.value;
+      window.__teMapForce = true;
       setStatus(stateStatus());
       tick();
     });
@@ -2895,13 +3089,16 @@
     if(teStage){
       var drag = null, suppressClick = 0, tapCount = 0, tapTimer = null;
       function angOf(e){
-        var r = teStage.getBoundingClientRect();
+        /* Centre of the DIAL FACE itself (not the stage box, which carries
+           the holo disc and case screws) — so the angle is true. */
+        var face = teStage.querySelector('.te-face');
+        var r = (face || teStage).getBoundingClientRect();
         return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
       }
       teStage.addEventListener('pointerdown', function(e){
         cancelFx();
         if(frozen) setFrozen(false);
-        drag = {a: angOf(e), off: offsetMs, moved: 0, t: Date.now()};
+        drag = {a: angOf(e), total: 0, startOff: offsetTargetMs, moved: 0, t: Date.now()};
         teStage.classList.add('dragging');
         try{ teStage.setPointerCapture(e.pointerId); }catch(err){}
       });
@@ -2911,9 +3108,13 @@
         while(d > 180) d -= 360;
         while(d < -180) d += 360;
         drag.a = a;
-        drag.off += d * 10000; /* 360deg = 3,600,000ms = 1 hour */
+        drag.total += d;
         drag.moved += Math.abs(d);
-        offsetMs = Math.round(drag.off);
+        /* EXACT mapping: total degrees turned x 10,000ms = offset.
+           One full 360deg turn is therefore exactly 3,600,000ms = 1 hour,
+           with no per-event rounding to accumulate into drift. */
+        offsetMs = drag.startOff + drag.total * 10000;
+        offsetTargetMs = offsetMs;
         setStatus('\u21BB Dragging time\u2026 ' + (offsetLabel() || '\u25F7 +0m'));
         tick();
       });
@@ -2930,12 +3131,7 @@
           tapTimer = setTimeout(function(){ tapCount = 0; }, 850);
           if(tapCount >= 3){
             tapCount = 0;
-            var on = !document.body.classList.contains('page-frozen');
-            document.body.classList.toggle('page-frozen', on);
-            if(engine) engine.classList.toggle('page-frozen', on);
-            var chip = document.getElementById('freezeChip');
-            if(chip) chip.classList.toggle('show', on);
-            setStatus(on ? '❄ 24 FREEZE — page frozen, only this watch runs. Tap the watch ×3 to release' : stateStatus());
+            setFrozen(!frozen);
           } else startTravel();
         } else {
           tapCount = 0;
@@ -2952,8 +3148,8 @@
       });
       teStage.addEventListener('keydown', function(e){
         if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); startTravel(); }
-        else if(e.key === 'ArrowRight'){ e.preventDefault(); cancelFx(); if(frozen) setFrozen(false); tweenOffset(offsetMs + 300000, 300, function(){ setStatus(stateStatus()); }); }
-        else if(e.key === 'ArrowLeft'){ e.preventDefault(); cancelFx(); if(frozen) setFrozen(false); tweenOffset(offsetMs - 300000, 300, function(){ setStatus(stateStatus()); }); }
+        else if(e.key === 'ArrowRight'){ e.preventDefault(); cancelFx(); if(frozen) setFrozen(false); tweenOffset(offsetTargetMs + 300000, 300, function(){ setStatus(stateStatus()); }); }
+        else if(e.key === 'ArrowLeft'){ e.preventDefault(); cancelFx(); if(frozen) setFrozen(false); tweenOffset(offsetTargetMs - 300000, 300, function(){ setStatus(stateStatus()); }); }
       });
     }
     if(teTravelBtn) teTravelBtn.addEventListener('click', startTravel);
@@ -3446,25 +3642,25 @@
   var backdrop = document.getElementById('demoBackdrop');
   var chips = Array.prototype.slice.call(overlay.querySelectorAll('.rd-step'));
   var steps = [
-    {stage:0, phase:'🔧 DISASSEMBLY', title:'1 · Your phone, as it arrives', text:'Sealed and whole — exactly how you hand it over. Photo of the condition is noted first.'},
-    {stage:1, phase:'🔧 DISASSEMBLY', title:'2 · Power OFF + tools ready', text:'Phone powered off, SIM tray removed. On the ESD mat: screwdriver, spudger, suction cup, tweezers and the screw tray — real bench setup.'},
-    {stage:2, phase:'🔧 DISASSEMBLY', title:'3 · Screws out — one by one', text:'Every screw is removed one by one with the screwdriver and placed in order in the tray. No screw is ever mixed up or lost.'},
-    {stage:3, phase:'🔧 DISASSEMBLY', title:'4 · Back cover lifted off', text:'Gentle heat softens the adhesive, the suction cup lifts the edge, and the back cover comes off cleanly — no cracks, no force.'},
-    {stage:4, phase:'🔧 DISASSEMBLY', title:'5 · Battery connector OFF — first, for safety', text:'The shield plate over the battery connector is unscrewed and the battery is disconnected FIRST. This is the real-teardown safety rule before touching anything else.'},
-    {stage:5, phase:'🔧 DISASSEMBLY', title:'6 · Battery out', text:'Adhesive pull-tabs are drawn out slowly and the Li-ion battery lifts out — labelled, undamaged, and kept safely aside.'},
-    {stage:6, phase:'🔧 DISASSEMBLY', title:'7 · Display & digitizer connectors off', text:'The rainbow display flex ribbons are unclipped one by one with a spudger. Each connector is photographed so it goes back exactly the same way.'},
-    {stage:7, phase:'🔧 DISASSEMBLY', title:'8 · Logic-board shield & screws out', text:'The metal shield over the logic board is unscrewed and lifted off, exposing the main board and its chips.'},
-    {stage:8, phase:'🔧 DISASSEMBLY', title:'9 · Logic board out', text:'Antenna cables are disconnected and the whole logic board — the brain of the phone — lifts out in one piece.'},
-    {stage:9, phase:'🔧 DISASSEMBLY', title:'10 · Camera modules out', text:'Rear dual cameras and the front camera module are unclipped and lifted out, lenses protected face-down on a clean cloth.'},
-    {stage:10, phase:'🔧 DISASSEMBLY', title:'11 · Loudspeaker module out', text:'The speaker box at the bottom is unscrewed and removed — this is the part that gives the phone its sound.'},
-    {stage:11, phase:'🔧 DISASSEMBLY', title:'12 · Taptic Engine out', text:'The Taptic Engine — the vibration motor that makes the premium iPhone-style haptics — is removed.'},
-    {stage:12, phase:'🔧 DISASSEMBLY', title:'13 · FULL TEARDOWN COMPLETE ✓', text:'Display assembly and charging flex separated. The frame is now empty and every single part is laid out on the bench: battery, board, cameras, speaker, Taptic Engine, cover and screws. Frame is cleaned and inspected.'},
-    {stage:13, phase:'🔩 REASSEMBLY — REVERSE ORDER', title:'14 · Reassembly: display back first', text:'Rebuilding in exact reverse order: the display assembly goes back onto the cleaned frame first and is aligned edge to edge.'},
-    {stage:14, phase:'🔩 REASSEMBLY — REVERSE ORDER', title:'15 · Taptic Engine + speaker back in', text:'The last parts out are the first back in — Taptic Engine and loudspeaker are seated and screwed down.'},
-    {stage:15, phase:'🔩 REASSEMBLY — REVERSE ORDER', title:'16 · Cameras + logic board back in', text:'Camera modules click back in, then the logic board is lowered into place, antenna cables reconnected and its shield screwed back on.'},
-    {stage:16, phase:'🔩 REASSEMBLY — REVERSE ORDER', title:'17 · Battery + all connectors back', text:'Every flex ribbon is reconnected one by one, the battery goes back in on fresh adhesive, and its connector and shield are fitted — battery reconnected LAST.'},
-    {stage:17, phase:'🔩 REASSEMBLY — REVERSE ORDER', title:'18 · Back cover sealed + screws back', text:'The back cover is sealed back on and every screw returns from the tray to its exact original hole, tightened in order.'},
-    {stage:18, phase:'✅ POWER ON & TESTING', title:'19 · Power ON — full testing ✓', text:'Power button pressed — it boots. Display, touch, charging, cameras, speaker, Taptic haptics and network are all tested one by one. Passed — ready to collect.'}
+    {stage:0, phase:'DISASSEMBLY', title:'1 · Your phone, as it arrives', text:'Sealed and whole — exactly how you hand it over. Photo of the condition is noted first.'},
+    {stage:1, phase:'DISASSEMBLY', title:'2 · Power OFF + tools ready', text:'Phone powered off, SIM tray removed. On the ESD mat: screwdriver, spudger, suction cup, tweezers and the screw tray — real bench setup.'},
+    {stage:2, phase:'DISASSEMBLY', title:'3 · Screws out — one by one', text:'Every screw is removed one by one with the screwdriver and placed in order in the tray. No screw is ever mixed up or lost.'},
+    {stage:3, phase:'DISASSEMBLY', title:'4 · Back cover lifted off', text:'Gentle heat softens the adhesive, the suction cup lifts the edge, and the back cover comes off cleanly — no cracks, no force.'},
+    {stage:4, phase:'DISASSEMBLY', title:'5 · Battery connector OFF — first, for safety', text:'The shield plate over the battery connector is unscrewed and the battery is disconnected FIRST. This is the real-teardown safety rule before touching anything else.'},
+    {stage:5, phase:'DISASSEMBLY', title:'6 · Battery out', text:'Adhesive pull-tabs are drawn out slowly and the Li-ion battery lifts out — labelled, undamaged, and kept safely aside.'},
+    {stage:6, phase:'DISASSEMBLY', title:'7 · Display & digitizer connectors off', text:'The rainbow display flex ribbons are unclipped one by one with a spudger. Each connector is photographed so it goes back exactly the same way.'},
+    {stage:7, phase:'DISASSEMBLY', title:'8 · Logic-board shield & screws out', text:'The metal shield over the logic board is unscrewed and lifted off, exposing the main board and its chips.'},
+    {stage:8, phase:'DISASSEMBLY', title:'9 · Logic board out', text:'Antenna cables are disconnected and the whole logic board — the brain of the phone — lifts out in one piece.'},
+    {stage:9, phase:'DISASSEMBLY', title:'10 · Camera modules out', text:'Rear dual cameras and the front camera module are unclipped and lifted out, lenses protected face-down on a clean cloth.'},
+    {stage:10, phase:'DISASSEMBLY', title:'11 · Loudspeaker module out', text:'The speaker box at the bottom is unscrewed and removed — this is the part that gives the phone its sound.'},
+    {stage:11, phase:'DISASSEMBLY', title:'12 · Taptic Engine out', text:'The Taptic Engine — the vibration motor that makes the premium iPhone-style haptics — is removed.'},
+    {stage:12, phase:'DISASSEMBLY', title:'13 · FULL TEARDOWN COMPLETE ✓', text:'Display assembly and charging flex separated. The frame is now empty and every single part is laid out on the bench: battery, board, cameras, speaker, Taptic Engine, cover and screws. Frame is cleaned and inspected.'},
+    {stage:13, phase:'REASSEMBLY — REVERSE ORDER', title:'14 · Reassembly: display back first', text:'Rebuilding in exact reverse order: the display assembly goes back onto the cleaned frame first and is aligned edge to edge.'},
+    {stage:14, phase:'REASSEMBLY — REVERSE ORDER', title:'15 · Taptic Engine + speaker back in', text:'The last parts out are the first back in — Taptic Engine and loudspeaker are seated and screwed down.'},
+    {stage:15, phase:'REASSEMBLY — REVERSE ORDER', title:'16 · Cameras + logic board back in', text:'Camera modules click back in, then the logic board is lowered into place, antenna cables reconnected and its shield screwed back on.'},
+    {stage:16, phase:'REASSEMBLY — REVERSE ORDER', title:'17 · Battery + all connectors back', text:'Every flex ribbon is reconnected one by one, the battery goes back in on fresh adhesive, and its connector and shield are fitted — battery reconnected LAST.'},
+    {stage:17, phase:'REASSEMBLY — REVERSE ORDER', title:'18 · Back cover sealed + screws back', text:'The back cover is sealed back on and every screw returns from the tray to its exact original hole, tightened in order.'},
+    {stage:18, phase:'POWER ON & TESTING', title:'19 · Power ON — full testing ✓', text:'Power button pressed — it boots. Display, touch, charging, cameras, speaker, Taptic haptics and network are all tested one by one. Passed — ready to collect.'}
   ];
   var idx = 0, playing = false, timer = null, lastFocus = null;
   var phaseEl = document.getElementById('demoPhase');
@@ -3619,12 +3815,14 @@
   if(teMap){
     var mtx = teMap.getContext('2d');
     var land = new Image(), landReady = false, lastMin = -1;
+    window.__teMapForce = window.__teMapForce || false;
     land.onload = function(){ landReady = true; lastMin = -1; };
     land.src = 'data:image/png;base64,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';
     window.__teMapDraw = function(date){
       if(!teMap.clientWidth) return;
-      var minuteKey = Math.floor(date.getTime() / 30000);
-      if(minuteKey === lastMin && landReady) return;
+      var minuteKey = Math.floor(date.getTime() / 4000);
+      if(minuteKey === lastMin && landReady && !window.__teMapForce) return;
+      window.__teMapForce = false;
       lastMin = minuteKey;
       var W = teMap.width, H = teMap.height, x, lon;
       var g = mtx.createLinearGradient(0, 0, 0, H);
@@ -3686,8 +3884,8 @@
     teFullBtn.addEventListener('click', function(){
       var on=tePanel.classList.toggle('map-full');
       teFullBtn.setAttribute('aria-pressed', on?'true':'false');
-      teFullBtn.textContent=on?'⌚ Show Watch Beside Map':'🌍 Full Map — Fill the Engine';
-      lastMin=-1; if(window.__teMapDraw) window.__teMapDraw(new Date());
+      teFullBtn.textContent=on?'Show Watch Beside Map':'Full Map \u2014 Fill the Engine';
+      lastMin=-1; window.__teMapForce=true; if(window.__teMapDraw) window.__teMapDraw(window.__teShownDate ? window.__teShownDate() : new Date());
       setTimeout(function(){ lastMin=-1; },350);
     });
   }
