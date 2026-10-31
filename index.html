@@ -1746,6 +1746,27 @@
       linear-gradient(165deg,#334e55,#2a4249 58%,#22363c);
     box-shadow:inset 0 3px 16px rgba(0,0,0,.6),inset 0 0 0 4px rgba(0,0,0,.12),inset 0 -22px 34px rgba(0,0,0,.28),0 18px 34px rgba(0,0,0,.4)}
   .rd-phase{letter-spacing:.22em}
+  /* --- SPEED TOGGLE + GENUINE OEM SPARES (this build) --- */
+  .rd-speed{display:inline-flex;align-items:center;gap:2px;background:#2f2f2b;border:1.5px solid #57554b;border-radius:999px;padding:3px}
+  .rd-speed>span{font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:#c9ba8d;font-weight:700;padding:0 6px 0 9px}
+  .rd-speed-btn{font:inherit;font-family:'JetBrains Mono',monospace;font-size:12.5px;font-weight:800;padding:7px 14px;border-radius:999px;border:0;background:transparent;color:#d8d3c4;cursor:pointer;transition:background-color .18s ease,color .18s ease}
+  .rd-speed-btn:hover{color:#fff}
+  .rd-speed-btn.active{background:#d9a441;color:#211a08}
+  .rd-speed-btn:focus-visible{outline:2px solid #d9a441;outline-offset:2px}
+  .rd-oem{margin:12px auto 0;max-width:470px;text-align:left;background:linear-gradient(180deg,#f4efe2,#eae2cd);border:1.5px solid #8a7f62;border-radius:8px;padding:11px 12px 12px;box-shadow:0 10px 22px rgba(0,0,0,.28);color:#26241e}
+  .rd-oem-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .rd-oem-head b{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#26241e}
+  .rd-oem-head span{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.09em;color:#2c6a3b;font-weight:800}
+  .rd-oem-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+  .oem-card{display:flex;gap:9px;align-items:center;background:#fffdf6;border:1px solid #c9c0a4;border-radius:6px;padding:7px 8px;min-width:0}
+  .oem-card svg{flex:0 0 26px}
+  .oem-card .oem-txt{min-width:0}
+  .oem-card b{display:block;font-size:10.5px;letter-spacing:.03em;line-height:1.3;color:#26241e}
+  .oem-card b em{font-style:normal;color:#2c6a3b}
+  .oem-card span{display:block;font-family:'JetBrains Mono',monospace;font-size:8.8px;color:#6b6350;line-height:1.5;margin-top:1px}
+  .oem-barcode{height:10px;margin-top:4px;background:repeating-linear-gradient(90deg,#26241e 0 2px,transparent 2px 4px,#26241e 4px 7px,transparent 7px 9px,#26241e 9px 10px,transparent 10px 13px)}
+  @media(max-width:560px){.oem-card b{font-size:9.5px}.oem-card span{font-size:8px}}
+
   /* --- (C) Freeze: page still, engine alive (both class names, one state) --- */
   body.time-frozen .time-engine *,body.time-frozen .time-engine *::before,body.time-frozen .time-engine *::after{animation-play-state:running!important}
   body.time-frozen #freezeChip,body.page-frozen #freezeChip{animation-play-state:running!important}
@@ -2045,7 +2066,7 @@
     <button class="rd-close" id="demoClose" type="button" aria-label="Close Repair Demo">✕</button>
     <div class="rd-kicker">// Repair Demo</div>
     <h2>Inside a <span>Repair</span></h2>
-    <p class="rd-sub">A full, real teardown — everything comes out one by one, starting with the battery for safety, then it is rebuilt in reverse order, part by part, and powered on. Press play for the real-time show, or tap any step.</p>
+    <p class="rd-sub">A full, real teardown — everything comes out one by one, starting with the battery for safety, then it is rebuilt in reverse order with genuine OEM spare parts — factory-labelled battery, display, board and cameras, each with its real part number — part by part, and powered on. Press play for the real-time show, or tap any step.</p>
     <div class="rd-phase" id="demoPhase">DISASSEMBLY</div>
     <div class="td-bench rd-bench" id="demoBench" data-stage="0" aria-hidden="true">
       <svg class="td-svg" viewBox="0 0 360 230" focusable="false" role="img" aria-label="Realistic exploded view of a phone on a repair bench mat">
@@ -2107,7 +2128,7 @@
           <circle cx="150" cy="32" r="5.2" fill="#101216" stroke="#6d7278" stroke-width="1"/><circle cx="150" cy="32" r="3.4" fill="url(#rdLens)"/><circle cx="148.7" cy="30.6" r="1" fill="rgba(255,255,255,.65)"/>
           <circle cx="150" cy="44" r="5.2" fill="#101216" stroke="#6d7278" stroke-width="1"/><circle cx="150" cy="44" r="3.4" fill="url(#rdLens)"/><circle cx="148.7" cy="42.6" r="1" fill="rgba(255,255,255,.65)"/>
           <circle cx="163" cy="32" r="2.1" fill="#c9b98a" stroke="#7a6f4e" stroke-width=".6"/><circle cx="163" cy="44" r=".9" fill="#0c0d0e"/>
-          <text class="td-part-label" x="155" y="60" text-anchor="middle">CAMERA</text>
+          <text class="td-part-label" x="155" y="60" text-anchor="middle">CAMERA · OEM 923-03211</text>
         </g>
         <!-- LOGIC BOARD: matte PCB, etched traces, shield cans, SoC, caps, resistors, connector pins -->
         <g class="p-board">
@@ -2115,14 +2136,14 @@
           <path d="M180 48h14l6 6v14M214 44v22l-6 6h-12M182 96h30M208 30v10" stroke="rgba(190,205,180,.20)" stroke-width=".7" fill="none"/>
           <path d="M180 62h10M204 78h10M186 104h24" stroke="rgba(190,205,180,.14)" stroke-width=".7" fill="none"/>
           <rect x="181" y="28" width="17" height="17" fill="#141518" stroke="#3f4448" stroke-width=".6"/>
-          <text x="189.5" y="35" text-anchor="middle" font-size="3.2" fill="#8d939a">A-SERIES</text><text x="189.5" y="39.5" text-anchor="middle" font-size="2.8" fill="#6d737a">SOC · 339S</text>
-          <rect x="201" y="28" width="13" height="13" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".5"/>
+          <text x="189.5" y="35" text-anchor="middle" font-size="3.2" fill="#8d939a">A-SERIES</text><text x="189.5" y="39.5" text-anchor="middle" font-size="2.8" fill="#6d737a">SOC · 339S00763</text>
+          <rect x="201" y="28" width="13" height="13" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".5"/><g aria-hidden="true"><rect x="202" y="29" width="11" height="11" fill="#eceade" stroke="#6d6a5e" stroke-width=".4"/><g fill="#22241f"><rect x="203" y="30" width="2.8" height="2.8"/><rect x="209.2" y="30" width="2.8" height="2.8"/><rect x="203" y="36.2" width="2.8" height="2.8"/><rect x="207" y="33.5" width="1.6" height="1.6"/><rect x="210" y="36.5" width="1.6" height="1.6"/><rect x="206.5" y="30.5" width="1.3" height="1.3"/></g></g>
           <rect x="181" y="49" width="11" height="11" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".5"/>
           <rect x="195" y="49" width="17" height="24" fill="#191a1c" stroke="#43474b" stroke-width=".5"/>
           <g fill="#2c2e30" stroke="#4a4e52" stroke-width=".4"><rect x="182" y="63" width="4" height="2.4"/><rect x="188" y="63" width="4" height="2.4"/><rect x="182" y="67" width="4" height="2.4"/><rect x="188" y="67" width="4" height="2.4"/><rect x="182" y="71" width="4" height="2.4"/><rect x="188" y="71" width="4" height="2.4"/></g>
           <g fill="#8f7c46"><rect x="183" y="82" width="3.4" height="4"/><rect x="189" y="82" width="3.4" height="4"/><rect x="195" y="82" width="3.4" height="4"/><rect x="201" y="82" width="3.4" height="4"/><rect x="207" y="82" width="3.4" height="4"/></g>
           <g fill="#b9bec3"><circle cx="185" cy="92" r="1.1"/><circle cx="192" cy="92" r="1.1"/><circle cx="199" cy="92" r="1.1"/><circle cx="206" cy="92" r="1.1"/></g>
-          <text class="td-part-label" x="197" y="103" text-anchor="middle">LOGIC BOARD</text>
+          <text class="td-part-label" x="197" y="103" text-anchor="middle">LOGIC BOARD · GENUINE OEM</text>
         </g>
         <g class="p-shield"><rect x="174" y="20" width="46" height="16" rx="2.5" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".7"/><path d="M178 24h38M178 32h38" stroke="rgba(0,0,0,.10)" stroke-width=".6"/><circle cx="178" cy="24" r="1.3" fill="#33373b"/><circle cx="216" cy="24" r="1.3" fill="#33373b"/><circle cx="178" cy="32" r="1.3" fill="#33373b"/><circle cx="216" cy="32" r="1.3" fill="#33373b"/><text x="197" y="30.5" text-anchor="middle" font-size="5" fill="#26292c" font-weight="700" letter-spacing=".6">SHIELD</text></g>
         <!-- BATTERY: matte black pouch cell, seam, full fine print, barcode, pull tabs -->
@@ -2142,18 +2163,18 @@
           <g fill="#c6c9cc"><rect x="150" y="132" width="1.2" height="7"/><rect x="152.4" y="132" width=".7" height="7"/><rect x="154.2" y="132" width="1.6" height="7"/><rect x="157" y="132" width=".7" height="7"/><rect x="158.8" y="132" width="1.2" height="7"/><rect x="161.2" y="132" width=".7" height="7"/><rect x="163" y="132" width="1.5" height="7"/><rect x="165.8" y="132" width=".7" height="7"/><rect x="167.6" y="132" width="1.2" height="7"/><rect x="170" y="132" width=".7" height="7"/><rect x="171.8" y="132" width="1.4" height="7"/><rect x="174.4" y="132" width=".7" height="7"/><rect x="176.2" y="132" width="1.2" height="7"/><rect x="178.6" y="132" width=".8" height="7"/></g>
           <text x="166" y="146" text-anchor="middle" font-size="4.6" fill="#b4b8bc">Li-ion · 2716mAh</text>
           <text x="166" y="152" text-anchor="middle" font-size="3.6" fill="#6f757b">MH45584 · Assembled — handle with care</text>
-          <rect x="146" y="156" width="9" height="4" fill="rgba(210,215,220,.28)"/><rect x="177" y="156" width="9" height="4" fill="rgba(210,215,220,.28)"/>
+          <rect x="146" y="156" width="9" height="4" fill="rgba(210,215,220,.28)"/><rect x="177" y="156" width="9" height="4" fill="rgba(210,215,220,.28)"/><g aria-hidden="true"><rect x="144" y="138.5" width="44" height="16" rx="1.6" fill="#e9e6da" stroke="#8f8b7d" stroke-width=".5"/><rect x="146.5" y="141" width="11" height="11" fill="#f7f5ee" stroke="#3a3a36" stroke-width=".5"/><g fill="#22241f"><rect x="147.8" y="142.3" width="3.2" height="3.2"/><rect x="152.8" y="142.3" width="3.2" height="3.2"/><rect x="147.8" y="147.8" width="3.2" height="3.2"/><rect x="152" y="146.5" width="1.7" height="1.7"/><rect x="149.5" y="145" width="1.5" height="1.5"/><rect x="154.5" y="149" width="1.7" height="1.7"/></g><text x="160" y="145.8" font-size="3.9" font-weight="700" fill="#274d31">GENUINE PART</text><text x="160" y="150.4" font-size="3.1" fill="#5c594e">OEM · S/N F2LX9K41</text></g>
         </g>
         <g class="p-battshield"><rect x="140" y="62" width="52" height="10" rx="2" fill="url(#rdShieldMetal)" stroke="#4c5054" stroke-width=".6"/><circle cx="146" cy="67" r="1.7" fill="#26292c"/><circle cx="186" cy="67" r="1.7" fill="#26292c"/><path d="M144.8 67h2.4M146 65.8v2.4M184.8 67h2.4M186 65.8v2.4" stroke="#0f1112" stroke-width=".6"/></g>
         <!-- FLEX RIBBONS: dull copper laminate with connector ends, no glow -->
         <g class="p-flex2" fill="none" stroke-linecap="round"><path d="M192 92 C 204 98, 210 104, 220 104" stroke="#8f683c" stroke-width="1.7"/><path d="M192 96 C 204 102, 210 108, 220 108" stroke="#7d5c33" stroke-width="1.7"/><path d="M192 100 C 204 106, 210 112, 220 112" stroke="#97703d" stroke-width="1.7"/><path d="M192 104 C 204 110, 210 116, 220 116" stroke="#755831" stroke-width="1.7"/><rect x="218" y="102" width="5" height="15" fill="#a8894e" stroke="#6d5a33" stroke-width=".5"/></g>
         <path class="td-glowline" d="M194 64 V158" stroke="#7d5c33" stroke-width="1.3" fill="none"/>
         <!-- TAPTIC ENGINE: dark steel block, engraved label, end screws -->
-        <g class="p-taptic"><rect x="140" y="164" width="44" height="18" rx="2.5" fill="#1d1f22" stroke="#4a4e52" stroke-width=".7"/><rect x="142" y="166" width="40" height="14" rx="2" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".6"/><text x="162" y="175.5" text-anchor="middle" font-size="4.8" letter-spacing=".6" fill="#aeb3b8">TAPTIC ENGINE</text></g>
+        <g class="p-taptic"><rect x="140" y="164" width="44" height="18" rx="2.5" fill="#1d1f22" stroke="#4a4e52" stroke-width=".7"/><rect x="142" y="166" width="40" height="14" rx="2" fill="none" stroke="rgba(255,255,255,.06)" stroke-width=".6"/><text x="162" y="174.5" text-anchor="middle" font-size="4.8" letter-spacing=".6" fill="#aeb3b8">TAPTIC ENGINE</text><text x="162" y="180" text-anchor="middle" font-size="3" letter-spacing=".4" fill="#798089">GENUINE · 923-03064</text></g>
         <!-- SPEAKER: steel enclosure with a real mesh of punched holes -->
-        <g class="p-speaker"><rect x="188" y="164" width="32" height="18" rx="2.5" fill="#7e848a" stroke="#4c5054" stroke-width=".7"/><rect x="190" y="166" width="28" height="14" rx="2" fill="#6a6f75"/><g fill="#2e3236"><circle cx="195" cy="170" r="1.15"/><circle cx="200" cy="170" r="1.15"/><circle cx="205" cy="170" r="1.15"/><circle cx="210" cy="170" r="1.15"/><circle cx="215" cy="170" r="1.15"/><circle cx="195" cy="175" r="1.15"/><circle cx="200" cy="175" r="1.15"/><circle cx="205" cy="175" r="1.15"/><circle cx="210" cy="175" r="1.15"/><circle cx="215" cy="175" r="1.15"/></g><text class="td-part-label" x="204" y="190" text-anchor="middle">SPEAKER</text></g>
+        <g class="p-speaker"><rect x="188" y="164" width="32" height="18" rx="2.5" fill="#7e848a" stroke="#4c5054" stroke-width=".7"/><rect x="190" y="166" width="28" height="14" rx="2" fill="#6a6f75"/><g fill="#2e3236"><circle cx="195" cy="170" r="1.15"/><circle cx="200" cy="170" r="1.15"/><circle cx="205" cy="170" r="1.15"/><circle cx="210" cy="170" r="1.15"/><circle cx="215" cy="170" r="1.15"/><circle cx="195" cy="175" r="1.15"/><circle cx="200" cy="175" r="1.15"/><circle cx="205" cy="175" r="1.15"/><circle cx="210" cy="175" r="1.15"/><circle cx="215" cy="175" r="1.15"/></g><text class="td-part-label" x="204" y="190" text-anchor="middle">SPEAKER · OEM</text></g>
         <!-- CHARGING / DISPLAY FLEX board: small dark PCB, USB-C port, gold pins -->
-        <g class="p-charge"><rect x="158" y="192" width="44" height="12" rx="2.5" fill="#232a26" stroke="#46584a" stroke-width=".6"/><rect x="172" y="195" width="16" height="5.5" rx="2.7" fill="#101214" stroke="#8f959c" stroke-width=".7"/><rect x="176" y="197" width="8" height="1.6" fill="#8f7c46"/><circle cx="162" cy="198" r="1.2" fill="#0c0d0e"/><circle cx="198" cy="198" r="1.2" fill="#0c0d0e"/><text class="td-part-label" x="180" y="212" text-anchor="middle">CHARGING / DISPLAY FLEX</text></g>
+        <g class="p-charge"><rect x="158" y="192" width="44" height="12" rx="2.5" fill="#232a26" stroke="#46584a" stroke-width=".6"/><rect x="172" y="195" width="16" height="5.5" rx="2.7" fill="#101214" stroke="#8f959c" stroke-width=".7"/><rect x="176" y="197" width="8" height="1.6" fill="#8f7c46"/><g aria-hidden="true"><rect x="188" y="195" width="11" height="6" fill="#eceade"/><g fill="#22241f"><rect x="189" y="196" width="1" height="4"/><rect x="190.6" y="196" width=".6" height="4"/><rect x="191.8" y="196" width="1.4" height="4"/><rect x="193.8" y="196" width=".6" height="4"/><rect x="195" y="196" width="1" height="4"/><rect x="196.6" y="196" width=".6" height="4"/></g></g><circle cx="162" cy="198" r="1.2" fill="#0c0d0e"/><circle cx="198" cy="198" r="1.2" fill="#0c0d0e"/><text class="td-part-label" x="180" y="212" text-anchor="middle">GENUINE DISPLAY FLEX · OEM</text></g>
         <!-- POWER-ON screen: muted display, no cartoon check badge -->
         <g class="p-power"><rect x="140" y="26" width="80" height="170" rx="6" fill="url(#rdScreen)"/><rect x="140" y="26" width="80" height="170" rx="6" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".8"/><text x="180" y="104" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="16" fill="#eef3f5" font-weight="700">9:41</text><text x="180" y="126" text-anchor="middle" font-size="7" letter-spacing="1.4" fill="#cfdde5">POWER ON</text><text x="180" y="140" text-anchor="middle" font-size="6" letter-spacing="1" fill="#a9bcc6">ALL TESTS PASSED</text></g>
         <!-- BACK COVER: matte graphite glass, soft lamp reflection, realistic camera plateau -->
@@ -2164,7 +2185,7 @@
           <circle cx="156" cy="34" r="6.2" fill="#0d0f12" stroke="#6d7278" stroke-width="1.1"/><circle cx="156" cy="34" r="4" fill="url(#rdLens)"/><circle cx="154.4" cy="32.4" r="1.1" fill="rgba(255,255,255,.6)"/>
           <circle cx="156" cy="52" r="6.2" fill="#0d0f12" stroke="#6d7278" stroke-width="1.1"/><circle cx="156" cy="52" r="4" fill="url(#rdLens)"/><circle cx="154.4" cy="50.4" r="1.1" fill="rgba(255,255,255,.6)"/>
           <text x="180" y="150" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" letter-spacing="3" fill="rgba(255,255,255,.34)">TECHY</text>
-          <text x="180" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="6.5" letter-spacing="1.6" fill="rgba(255,255,255,.20)">JR SERIES</text>
+          <text x="180" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="6.5" letter-spacing="1.6" fill="rgba(255,255,255,.20)">JR SERIES</text><text x="180" y="196" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="4.4" letter-spacing="1.1" fill="rgba(255,255,255,.26)">GENUINE OEM GLASS · 821-01795</text>
         </g>
         <!-- Pentalobe-style screws: shaded metal heads, dark Phillips recess, specular highlight -->
         <g class="td-screw sc1"><circle cx="140" cy="22" r="5" fill="url(#rdScrewGrad)"/><path d="M137.4 22h5.2M140 19.4v5.2"/><circle cx="138.4" cy="20.4" r="1.3" fill="rgba(255,255,255,.55)"/></g>
@@ -2183,6 +2204,7 @@
         <g class="td-done"><circle cx="238" cy="196" r="16" fill="#39443a" stroke="#9aa78f" stroke-width="1.4"/><circle cx="238" cy="196" r="13.5" fill="none" stroke="rgba(255,255,255,.14)" stroke-width=".8"/><path d="M230 196l5.5 5.5 11-12" stroke="#dde3d5" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
       </svg>
     </div>
+    <div class="rd-oem" aria-label="Genuine OEM spare parts used in this repair"><div class="rd-oem-head"><b>GENUINE OEM SPARES — FITTED IN THIS REPAIR</b><span>FACTORY LABELS CHECKED ✓</span></div><div class="rd-oem-grid"><div class="oem-card"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#ffffff" stroke="#c9c0a4"/><g fill="#22241f"><rect x="3" y="3" width="7" height="7"/><rect x="16" y="3" width="7" height="7"/><rect x="3" y="16" width="7" height="7"/></g><g fill="#ffffff"><rect x="5" y="5" width="3" height="3"/><rect x="18" y="5" width="3" height="3"/><rect x="5" y="18" width="3" height="3"/></g><g fill="#22241f"><rect x="12" y="4" width="2" height="2"/><rect x="12" y="9" width="2" height="2"/><rect x="17" y="12" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/><rect x="20" y="17" width="2" height="2"/><rect x="15" y="20" width="2" height="2"/><rect x="21" y="21" width="2" height="2"/></g></svg><div class="oem-txt"><b>BATTERY — <em>GENUINE ✓</em></b><span>P/N 616-00351 · 3.81V · 2716mAh</span><div class="oem-barcode" aria-hidden="true"></div></div></div><div class="oem-card"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#ffffff" stroke="#c9c0a4"/><g fill="#22241f"><rect x="3" y="3" width="7" height="7"/><rect x="16" y="3" width="7" height="7"/><rect x="3" y="16" width="7" height="7"/></g><g fill="#ffffff"><rect x="5" y="5" width="3" height="3"/><rect x="18" y="5" width="3" height="3"/><rect x="5" y="18" width="3" height="3"/></g><g fill="#22241f"><rect x="12" y="4" width="2" height="2"/><rect x="12" y="9" width="2" height="2"/><rect x="17" y="12" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/><rect x="20" y="17" width="2" height="2"/><rect x="15" y="20" width="2" height="2"/><rect x="21" y="21" width="2" height="2"/></g></svg><div class="oem-txt"><b>DISPLAY ASSEMBLY — <em>GENUINE ✓</em></b><span>P/N 821-01795 · Factory-sealed</span><div class="oem-barcode" aria-hidden="true"></div></div></div><div class="oem-card"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#ffffff" stroke="#c9c0a4"/><g fill="#22241f"><rect x="3" y="3" width="7" height="7"/><rect x="16" y="3" width="7" height="7"/><rect x="3" y="16" width="7" height="7"/></g><g fill="#ffffff"><rect x="5" y="5" width="3" height="3"/><rect x="18" y="5" width="3" height="3"/><rect x="5" y="18" width="3" height="3"/></g><g fill="#22241f"><rect x="12" y="4" width="2" height="2"/><rect x="12" y="9" width="2" height="2"/><rect x="17" y="12" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/><rect x="20" y="17" width="2" height="2"/><rect x="15" y="20" width="2" height="2"/><rect x="21" y="21" width="2" height="2"/></g></svg><div class="oem-txt"><b>LOGIC BOARD — <em>GENUINE ✓</em></b><span>P/N 820-01928-A · OEM board</span><div class="oem-barcode" aria-hidden="true"></div></div></div><div class="oem-card"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" focusable="false"><rect width="26" height="26" fill="#ffffff" stroke="#c9c0a4"/><g fill="#22241f"><rect x="3" y="3" width="7" height="7"/><rect x="16" y="3" width="7" height="7"/><rect x="3" y="16" width="7" height="7"/></g><g fill="#ffffff"><rect x="5" y="5" width="3" height="3"/><rect x="18" y="5" width="3" height="3"/><rect x="5" y="18" width="3" height="3"/></g><g fill="#22241f"><rect x="12" y="4" width="2" height="2"/><rect x="12" y="9" width="2" height="2"/><rect x="17" y="12" width="2" height="2"/><rect x="12" y="14" width="2" height="2"/><rect x="20" y="17" width="2" height="2"/><rect x="15" y="20" width="2" height="2"/><rect x="21" y="21" width="2" height="2"/></g></svg><div class="oem-txt"><b>CAMERA MODULE — <em>GENUINE ✓</em></b><span>P/N 923-03211 · OEM module</span><div class="oem-barcode" aria-hidden="true"></div></div></div></div></div>
     <div class="rd-caption" aria-live="polite"><b id="demoCapTitle">Your phone, as it arrives</b><span id="demoCapText">Sealed and whole — exactly how you hand it over at the shop.</span></div>
     <div class="rd-count" id="demoCount">Step 1 / 19</div>
     <div class="rd-steps" role="group" aria-label="Demo steps">
@@ -2209,7 +2231,7 @@
     <div class="rd-controls">
       <button class="rd-btn" id="demoPrev" type="button">‹ Prev</button>
       <button class="rd-btn primary" id="demoPlay" type="button">▶ Play the Teardown</button>
-      <button class="rd-btn" id="demoNext" type="button">Next ›</button>
+      <button class="rd-btn" id="demoNext" type="button">Next ›</button><div class="rd-speed" role="group" aria-label="Teardown play speed"><span>SPEED</span><button class="rd-speed-btn active" id="demoSpeed1" type="button" data-speed="1" aria-pressed="true">1x</button><button class="rd-speed-btn" id="demoSpeed2" type="button" data-speed="2" aria-pressed="false">2x</button></div>
     </div>
     <a class="rd-share" id="demoShare" href="https://wa.me/" target="_blank" rel="noopener">💬 Send This Demo on WhatsApp</a>
     <p class="rd-share-note">Sending it to a customer? Tap the button, pick their chat, and send — a short message about this demo is already typed for you.</p>
@@ -3647,22 +3669,23 @@
     {stage:2, phase:'DISASSEMBLY', title:'3 · Screws out — one by one', text:'Every screw is removed one by one with the screwdriver and placed in order in the tray. No screw is ever mixed up or lost.'},
     {stage:3, phase:'DISASSEMBLY', title:'4 · Back cover lifted off', text:'Gentle heat softens the adhesive, the suction cup lifts the edge, and the back cover comes off cleanly — no cracks, no force.'},
     {stage:4, phase:'DISASSEMBLY', title:'5 · Battery connector OFF — first, for safety', text:'The shield plate over the battery connector is unscrewed and the battery is disconnected FIRST. This is the real-teardown safety rule before touching anything else.'},
-    {stage:5, phase:'DISASSEMBLY', title:'6 · Battery out', text:'Adhesive pull-tabs are drawn out slowly and the Li-ion battery lifts out — labelled, undamaged, and kept safely aside.'},
+    {stage:5, phase:'DISASSEMBLY', title:'6 · Battery out', text:'Adhesive pull-tabs are drawn out slowly and the Li-ion battery lifts out — factory-labelled (P/N 616-00351), undamaged, and kept safely aside.'},
     {stage:6, phase:'DISASSEMBLY', title:'7 · Display & digitizer connectors off', text:'The rainbow display flex ribbons are unclipped one by one with a spudger. Each connector is photographed so it goes back exactly the same way.'},
     {stage:7, phase:'DISASSEMBLY', title:'8 · Logic-board shield & screws out', text:'The metal shield over the logic board is unscrewed and lifted off, exposing the main board and its chips.'},
     {stage:8, phase:'DISASSEMBLY', title:'9 · Logic board out', text:'Antenna cables are disconnected and the whole logic board — the brain of the phone — lifts out in one piece.'},
     {stage:9, phase:'DISASSEMBLY', title:'10 · Camera modules out', text:'Rear dual cameras and the front camera module are unclipped and lifted out, lenses protected face-down on a clean cloth.'},
     {stage:10, phase:'DISASSEMBLY', title:'11 · Loudspeaker module out', text:'The speaker box at the bottom is unscrewed and removed — this is the part that gives the phone its sound.'},
     {stage:11, phase:'DISASSEMBLY', title:'12 · Taptic Engine out', text:'The Taptic Engine — the vibration motor that makes the premium iPhone-style haptics — is removed.'},
-    {stage:12, phase:'DISASSEMBLY', title:'13 · FULL TEARDOWN COMPLETE ✓', text:'Display assembly and charging flex separated. The frame is now empty and every single part is laid out on the bench: battery, board, cameras, speaker, Taptic Engine, cover and screws. Frame is cleaned and inspected.'},
-    {stage:13, phase:'REASSEMBLY — REVERSE ORDER', title:'14 · Reassembly: display back first', text:'Rebuilding in exact reverse order: the display assembly goes back onto the cleaned frame first and is aligned edge to edge.'},
+    {stage:12, phase:'DISASSEMBLY', title:'13 · FULL TEARDOWN COMPLETE ✓', text:'Display assembly and charging flex separated. The frame is now empty and every single part is laid out on the bench: battery, board, cameras, speaker, Taptic Engine, cover and screws. Frame is cleaned and inspected. Genuine OEM spares — factory-labelled battery, display, board and camera, each part number and seal checked — are unsealed and ready if any part needs replacing.'},
+    {stage:13, phase:'REASSEMBLY — REVERSE ORDER', title:'14 · Reassembly: display back first', text:'Rebuilding in exact reverse order: the display assembly — genuine OEM, factory seal and label checked — goes back onto the cleaned frame first and is aligned edge to edge.'},
     {stage:14, phase:'REASSEMBLY — REVERSE ORDER', title:'15 · Taptic Engine + speaker back in', text:'The last parts out are the first back in — Taptic Engine and loudspeaker are seated and screwed down.'},
     {stage:15, phase:'REASSEMBLY — REVERSE ORDER', title:'16 · Cameras + logic board back in', text:'Camera modules click back in, then the logic board is lowered into place, antenna cables reconnected and its shield screwed back on.'},
-    {stage:16, phase:'REASSEMBLY — REVERSE ORDER', title:'17 · Battery + all connectors back', text:'Every flex ribbon is reconnected one by one, the battery goes back in on fresh adhesive, and its connector and shield are fitted — battery reconnected LAST.'},
+    {stage:16, phase:'REASSEMBLY — REVERSE ORDER', title:'17 · Battery + all connectors back', text:'Every flex ribbon is reconnected one by one, the genuine OEM battery (P/N 616-00351) goes back in on fresh adhesive, and its connector and shield are fitted — battery reconnected LAST.'},
     {stage:17, phase:'REASSEMBLY — REVERSE ORDER', title:'18 · Back cover sealed + screws back', text:'The back cover is sealed back on and every screw returns from the tray to its exact original hole, tightened in order.'},
     {stage:18, phase:'POWER ON & TESTING', title:'19 · Power ON — full testing ✓', text:'Power button pressed — it boots. Display, touch, charging, cameras, speaker, Taptic haptics and network are all tested one by one. Passed — ready to collect.'}
   ];
   var idx = 0, playing = false, timer = null, lastFocus = null;
+  var speed = 1, BASE_DELAY = 1100; /* Play is twice as fast as before: 1x = ~1.1s per step, 2x = ~0.55s per step */
   var phaseEl = document.getElementById('demoPhase');
   function render(){
     bench.setAttribute('data-stage', steps[idx].stage);
@@ -3687,7 +3710,7 @@
     timer = setInterval(function(){
       if(idx >= steps.length - 1){ stopPlay(); return; }
       idx++; render();
-    }, 2200);
+    }, BASE_DELAY / speed);
   }
   function openDemo(){
     lastFocus = document.activeElement;
@@ -3705,6 +3728,19 @@
     if(lastFocus && lastFocus.focus) lastFocus.focus();
   }
   playBtn.addEventListener('click', function(){ playing ? stopPlay() : startPlay(); });
+  var speedBtns = Array.prototype.slice.call(overlay.querySelectorAll('.rd-speed-btn'));
+  function setSpeed(s){
+    speed = s;
+    speedBtns.forEach(function(b){
+      var on = parseInt(b.getAttribute('data-speed'), 10) === s;
+      b.classList.toggle('active', on);
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if(playing){ stopPlay(); startPlay(); }
+  }
+  speedBtns.forEach(function(b){
+    b.addEventListener('click', function(){ setSpeed(parseInt(b.getAttribute('data-speed'), 10) || 1); });
+  });
   prevBtn.addEventListener('click', function(){ stopPlay(); if(idx > 0){ idx--; render(); } });
   nextBtn.addEventListener('click', function(){ stopPlay(); if(idx < steps.length - 1){ idx++; render(); } });
   chips.forEach(function(c){
@@ -3720,7 +3756,7 @@
      Techy picks the customer himself and sends it manually. */
   var share = document.getElementById('demoShare');
   if(share){
-    var msg = 'Hi! \uD83D\uDC4B Watch how a phone is opened & repaired, step by step \u2014 my Repair Demo.\n\nOpen my portfolio page and tap my name "JAMSHEER JR" 3 times \u2014 the teardown demo opens: back cover off, screws out, battery & connectors checked, then back together and tested.\n\n\u2014 Jamsheer JR (Techy), Mobile & Laptop Service, Kothamangalam \u00B7 +91 79941 74690';
+    var msg = 'Hi! \uD83D\uDC4B Watch how a phone is opened & repaired, step by step \u2014 my Repair Demo.\n\nOpen my portfolio page and tap my name "JAMSHEER JR" 3 times \u2014 the teardown demo opens: back cover off, screws out, battery & connectors checked, genuine OEM spares fitted, then back together and tested.\n\n\u2014 Jamsheer JR (Techy), Mobile & Laptop Service, Kothamangalam \u00B7 +91 79941 74690';
     share.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
   }
   /* THE SECRET DOOR — 3 quick taps/clicks on the hero name open the demo */
