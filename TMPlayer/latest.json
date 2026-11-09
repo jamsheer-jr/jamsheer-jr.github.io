@@ -1,1 +1,24 @@
-{"assets":{"android-universal":{"sha256":"1644b1cbd592a8b88a8b0e7c07e8eec7369cd098cb63e5e0088abc8587eced74","size":32946376,"url":"https://github.com/jamsheer-jr/JPlayer/releases/download/v1.0.22/JPlayer-1.0.22-universal.apk"}},"changes":["Dual subtitles now work with two tracks inside the video itself, where the video is downloaded: a silent second player reads the other track out of the file and its lines stand over the main track's, in the same layer, dragging and styled together","A series remembers its companion subtitle: pick a companion once, and the next episode stands a second track in that language as the companion by itself","Removing the companion is remembered too, and the companion memory is part of a backup and of the learnt languages a series can forget"],"notes":"Dual subtitles completed: two embedded tracks together on a downloaded video, and the companion choice remembered per series.","published":"2026-11-09T06:19:20Z","releaseUrl":"https://github.com/jamsheer-jr/JPlayer/releases/tag/v1.0.22","schema":1,"version":"1.0.22","versionCode":1002299}
+{
+  "assets": {
+    "android-universal": {
+      "url": "https://github.com/jamsheer-jr/JPlayer/releases/download/v1.0.23/JPlayer-1.0.23-universal.apk",
+      "sha256": "6b8750068bbb91e873e7e74938dcab0bc1e58af757610f3dd1f92226a5c25ae1",
+      "size": 32952403
+    }
+  },
+  "changes": [
+    "Dual subtitles on streamed videos too, not just downloads, and tapping another subtitle now switches at once",
+    "The companion line sits above the main line in one block, a little smaller, never overlapping",
+    "MSone season packs: each episode gets its own file from the pack, and your MSone pick on one episode comes back by itself on the next",
+    "Category pages: three posters across and a banner that turns like Home's",
+    "Movie and cast pages fill in without the stuck feel; versions show a searching line while your chats are asked",
+    "Downloads: the last watched video's cache can be deleted from its card",
+    "Settings: the colour you pick now stands in dark and light alike"
+  ],
+  "notes": "Dual subtitles finished: streamed videos too, with the two lines stacked clean. MSone season packs now give each episode its own file.",
+  "published": "2026-11-09T13:22:29Z",
+  "releaseUrl": "https://github.com/jamsheer-jr/JPlayer/releases/tag/v1.0.23",
+  "schema": 1,
+  "version": "1.0.23",
+  "versionCode": 1002399
+}
