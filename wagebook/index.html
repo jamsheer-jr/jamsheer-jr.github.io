@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#059669">
+<meta name="description" content="Offline wage book: daily wages, advances, bonus and leave on a monthly calendar.">
+<title>Wage Book — കൂലി ബുക്ക്</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<style>
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Malayalam", sans-serif;
+  background: #f0fdf4;
+  color: #111827;
+  font-size: 16px;
+  line-height: 1.4;
+}
+button, input, select { font: inherit; }
+button { cursor: pointer; }
+.app { max-width: 480px; margin: 0 auto; padding: 12px 12px 32px; }
+
+header { display: flex; justify-content: space-between; align-items: center; padding: 4px 2px 0; }
+header h1 { margin: 0; font-size: 22px; }
+.tag { margin: 0; color: #6b7280; font-size: 13px; }
+.iconbtn {
+  min-width: 44px; min-height: 44px; border: 1px solid #e5e7eb; background: #fff;
+  border-radius: 10px; font-size: 20px; line-height: 1; padding: 0 10px; color: #111827;
+}
+.iconbtn svg { display: block; margin: 0 auto; }
+
+.card { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 14px; margin-top: 12px; }
+h2 { font-size: 17px; margin: 0 0 8px; }
+h3 { font-size: 15px; margin: 18px 0 8px; }
+.muted { color: #6b7280; font-weight: 400; font-size: 13px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.chip {
+  min-height: 44px; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid #d1d5db; background: #fff; font-size: 15px; color: #111827;
+}
+.chip.active { background: #059669; color: #fff; border-color: #059669; }
+.chip.sm { min-height: 40px; padding: 6px 14px; font-size: 14px; }
+
+.balance { background: #059669; color: #fff; border: none; }
+.bal-label { font-size: 14px; opacity: 0.92; }
+.bal-amount { font-size: 34px; font-weight: 700; margin-top: 2px; }
+.bal-sub { font-size: 13px; opacity: 0.88; margin-top: 4px; }
+
+.cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.navbtn {
+  min-width: 44px; min-height: 44px; border: 1px solid #e5e7eb; background: #fff;
+  border-radius: 10px; font-size: 26px; line-height: 1; padding-bottom: 4px; color: #111827;
+}
+.cal-title { text-align: center; font-size: 17px; font-weight: 700; }
+.cal-title button {
+  display: block; margin: 4px auto 0; min-height: 32px; padding: 4px 14px;
+  border-radius: 999px; border: 1px solid #d1d5db; background: #fff; font-size: 13px; color: #111827;
+}
+.dow { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+.dow span { text-align: center; font-size: 12px; font-weight: 700; color: #6b7280; padding: 4px 0; }
+.grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cell {
+  min-height: 58px; border: 1px solid #e5e7eb; border-radius: 8px; background: #fff;
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
+  padding: 4px 5px; position: relative; text-align: left; color: #111827;
+}
+.cell.blank { border-color: transparent; background: transparent; }
+.cell.today { border-color: #059669; border-width: 2px; background: #ecfdf5; }
+.cell.selected { background: #d1fae5; border-color: #059669; }
+.num { font-size: 14px; font-weight: 700; line-height: 1.2; }
+.amt { font-size: 10px; line-height: 1.35; font-weight: 600; white-space: nowrap; }
+.amt.green { color: #047857; }
+.amt.red { color: #dc2626; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: #d97706; position: absolute; top: 5px; right: 5px; }
+.lv { position: absolute; bottom: 3px; right: 5px; font-size: 10px; color: #6b7280; font-weight: 700; }
+
+.day-head, .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.day-head h2, .sheet-head h2 { margin: 0; }
+.leave-row { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: 16px; margin-top: 6px; }
+.leave-row input { width: 22px; height: 22px; accent-color: #059669; margin: 0; }
+.empty { color: #6b7280; font-size: 14px; padding: 10px 0 4px; }
+.entry-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 0; border-top: 1px solid #f3f4f6; }
+.entry-main { min-width: 0; }
+.entry-type { font-weight: 700; font-size: 15px; }
+.entry-sub { font-size: 13px; color: #6b7280; word-break: break-word; }
+.entry-amt { font-weight: 700; font-size: 16px; white-space: nowrap; }
+.entry-amt.green { color: #047857; }
+.entry-amt.red { color: #dc2626; }
+.entry-amt.amber { color: #b45309; }
+.entry-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.mini-btn { min-width: 40px; min-height: 40px; border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; font-size: 13px; padding: 0 8px; color: #111827; }
+.mini-btn.del { color: #dc2626; }
+
+.entry-form { border-top: 2px solid #ecfdf5; margin-top: 8px; padding-top: 12px; }
+.seg { display: flex; gap: 6px; }
+.segbtn { flex: 1; min-height: 44px; border-radius: 10px; border: 1px solid #d1d5db; background: #fff; font-size: 15px; color: #111827; }
+.segbtn.active { background: #059669; color: #fff; border-color: #059669; }
+.fld { display: block; margin-top: 12px; font-size: 14px; color: #374151; }
+.fld .lbl { display: block; margin-bottom: 6px; }
+.fld input, .fld select {
+  width: 100%; min-height: 48px; margin-top: 6px; padding: 10px 12px;
+  font-size: 16px; border: 1px solid #d1d5db; border-radius: 10px; background: #fff; color: #111827;
+}
+.fld .chips { margin-top: 0; }
+.form-btns { display: flex; gap: 8px; margin-top: 14px; }
+.btn {
+  min-height: 48px; padding: 12px 16px; border-radius: 10px;
+  border: 1px solid #d1d5db; background: #fff; font-size: 16px; color: #111827;
+}
+.btn.primary { background: #059669; color: #fff; border-color: #059669; flex: 1; }
+.btn.danger { color: #dc2626; border-color: #fca5a5; }
+.btn.ghost { background: transparent; }
+.btn.full { width: 100%; margin-top: 12px; }
+.btn.wa { background: #059669; color: #fff; border-color: #059669; }
+
+.sum-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid #f3f4f6; font-size: 15px; }
+.sum-row:first-child { border-top: none; }
+.sum-row.total { font-weight: 700; font-size: 18px; border-top: 2px solid #ecfdf5; margin-top: 4px; padding-top: 12px; }
+.sum-row .v-green { color: #047857; font-weight: 700; }
+.sum-row .v-red { color: #dc2626; font-weight: 700; }
+.sum-row .v-amber { color: #b45309; font-weight: 700; }
+
+.foot { text-align: center; color: #6b7280; font-size: 13px; margin-top: 16px; }
+
+.overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 10; }
+.sheet { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 16px 16px 0 0; padding: 16px 16px 32px; }
+.row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.row-btns.col { flex-direction: column; }
+.row-btns.col .btn { width: 100%; }
+.jobrow { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid #f3f4f6; font-size: 15px; }
+.add-row { display: flex; gap: 8px; margin-top: 8px; }
+.add-row input { flex: 1; min-width: 0; min-height: 48px; padding: 10px 12px; font-size: 16px; border: 1px solid #d1d5db; border-radius: 10px; }
+.privacy { color: #6b7280; font-size: 13px; margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <h1>Wage Book</h1>
+      <p class="tag">കൂലി കണക്ക്</p>
+    </div>
+    <button id="settingsBtn" class="iconbtn" type="button" aria-label="Settings">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="3.2"/>
+        <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5 5l2.1 2.1M16.9 16.9L19 19M19 5l-2.1 2.1M7.1 16.9L5 19"/>
+      </svg>
+    </button>
+  </header>
+
+  <div class="chips" id="workerChips"></div>
+  <div class="chips">
+    <button id="addWorkerBtn" class="chip" type="button">+ തൊഴിലാളി</button>
+  </div>
+
+  <section class="card balance">
+    <div class="bal-label"><span id="balName"></span> · ബാലൻസ്</div>
+    <div id="balAmount" class="bal-amount"></div>
+    <div class="bal-sub" id="balSub"></div>
+  </section>
+
+  <section class="card">
+    <div class="cal-head">
+      <button id="prevMonth" class="navbtn" type="button" aria-label="Previous month">‹</button>
+      <div class="cal-title">
+        <span id="calMonth"></span>
+        <button id="todayBtn" type="button">ഇന്ന്</button>
+      </div>
+      <button id="nextMonth" class="navbtn" type="button" aria-label="Next month">›</button>
+    </div>
+    <div class="dow"><span>ഞാ</span><span>തി</span><span>ചൊ</span><span>ബു</span><span>വ്യാ</span><span>വെ</span><span>ശ</span></div>
+    <div id="calGrid" class="grid"></div>
+  </section>
+
+  <section id="dayPanel" class="card" hidden>
+    <div class="day-head">
+      <h2 id="dayTitle"></h2>
+      <button id="closeDay" class="iconbtn" type="button" aria-label="Close">×</button>
+    </div>
+    <label class="leave-row"><input type="checkbox" id="leaveToggle"> <span>ലീവ് ദിവസം</span></label>
+    <div id="dayEntries"></div>
+    <form id="entryForm" class="entry-form">
+      <div class="seg">
+        <button type="button" id="typeWage" class="segbtn active">കൂലി</button>
+        <button type="button" id="typeAdvance" class="segbtn">മേടിച്ചത്</button>
+        <button type="button" id="typeBonus" class="segbtn">ബോണസ്</button>
+      </div>
+      <label class="fld">തുക ₹
+        <input id="fAmount" type="number" inputmode="numeric" min="1" step="1" required>
+      </label>
+      <label class="fld" id="jobRow">ജോലി
+        <select id="fJob"></select>
+      </label>
+      <div class="fld" id="modeRow" hidden>
+        <span class="lbl">രീതി</span>
+        <div class="chips">
+          <button type="button" id="modeCash" class="chip sm active">Cash</button>
+          <button type="button" id="modeGPay" class="chip sm">GPay</button>
+          <button type="button" id="modeOther" class="chip sm">Other</button>
+        </div>
+      </div>
+      <label class="fld">വിവരണം (ഓപ്ഷണൽ)
+        <input id="fDesc" type="text" maxlength="120">
+      </label>
+      <div class="form-btns">
+        <button type="submit" class="btn primary" id="saveBtn">സേവ്</button>
+        <button type="button" class="btn ghost" id="cancelEditBtn" hidden>റദ്ദാക്കുക</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>ഈ മാസത്തെ കണക്ക് <span id="sumMonth" class="muted"></span></h2>
+    <div id="monthSummary"></div>
+    <button id="shareBtn" class="btn wa full" type="button">WhatsApp-ൽ അയക്കുക</button>
+  </section>
+
+  <section class="card">
+    <h2>കഴിഞ്ഞ മാസം <span id="lastMonthName" class="muted"></span></h2>
+    <div id="lastSummary"></div>
+  </section>
+
+  <p class="foot">ഡാറ്റ ഈ ഫോണിൽ മാത്രം സേവ് ചെയ്യുന്നു.</p>
+</div>
+
+<div id="settingsPanel" class="overlay" hidden>
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2>സെറ്റിങ്സ്</h2>
+      <button id="closeSettings" class="iconbtn" type="button" aria-label="Close">×</button>
+    </div>
+    <h3>തൊഴിലാളി — <span id="settingsWorkerName"></span></h3>
+    <div class="row-btns">
+      <button id="renameWorkerBtn" class="btn" type="button">പേര് മാറ്റുക</button>
+      <button id="deleteWorkerBtn" class="btn danger" type="button">ഒഴിവാക്കുക</button>
+    </div>
+    <h3>ജോലികൾ</h3>
+    <div id="jobList"></div>
+    <div class="add-row">
+      <input id="newJobInput" type="text" maxlength="40" placeholder="പുതിയ ജോലി">
+      <button id="addJobBtn" class="btn" type="button">ചേർക്കുക</button>
+    </div>
+    <h3>തുടക്ക ബാലൻസ്</h3>
+    <div class="add-row">
+      <input id="openingInput" type="number" inputmode="numeric" step="1">
+      <button id="saveOpeningBtn" class="btn" type="button">സേവ്</button>
+    </div>
+    <h3>ഡാറ്റ</h3>
+    <div class="row-btns col">
+      <button id="exportBtn" class="btn" type="button">ഡാറ്റ എക്സ്പോർട്ട് (JSON)</button>
+      <button id="importBtn" class="btn" type="button">ഡാറ്റ ഇമ്പോർട്ട്</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+      <button id="clearBtn" class="btn danger" type="button">എല്ലാ ഡാറ്റയും മായ്ക്കുക</button>
+    </div>
+    <p class="privacy">ഡാറ്റ ഈ ഫോണിൽ മാത്രം സേവ് ചെയ്യുന്നു. ഇന്റർനെറ്റിലേക്ക് ഒന്നും അയക്കുന്നില്ല.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+var KEY = "wagebook-v1";
+var DEFAULT_JOBS = ["Mobile Repair", "Laptop Repair", "CCTV", "Camera", "Other"];
+var TYPE_LABEL = { wage: "കൂലി", advance: "മേടിച്ചത്", bonus: "ബോണസ്" };
+
+function el(id) { return document.getElementById(id); }
+function pad(n) { return (n < 10 ? "0" : "") + n; }
+function keyOf(y, m, d) { return y + "-" + pad(m + 1) + "-" + pad(d); }
+function parseKey(k) { var p = k.split("-"); return { y: +p[0], m: +p[1] - 1, d: +p[2] }; }
+function uid() { return Date.now().toString(36) + Math.floor(Math.random() * 1000000).toString(36); }
+function fmt(n) { return "\u20B9" + Math.trunc(n).toLocaleString("en-IN"); }
+function shortNum(n) { return Math.trunc(n).toLocaleString("en-IN"); }
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function monthName(y, m) {
+  return new Date(y, m, 1).toLocaleDateString("en-IN", { month: "long", year: "numeric" });
+}
+function dayTitle(k) {
+  var p = parseKey(k);
+  return new Date(p.y, p.m, p.d).toLocaleDateString("en-IN",
+    { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+}
+
+function seed() {
+  var w = { id: uid(), name: "Sunny", openingBalance: 0, jobs: DEFAULT_JOBS.slice(), days: {} };
+  return { workers: [w], activeWorkerId: w.id };
+}
+
+function validData(d) {
+  if (!d || !Array.isArray(d.workers) || d.workers.length === 0) return false;
+  for (var i = 0; i < d.workers.length; i++) {
+    var w = d.workers[i];
+    if (!w || typeof w.id !== "string" || typeof w.name !== "string") return false;
+    if (!Array.isArray(w.jobs)) w.jobs = DEFAULT_JOBS.slice();
+    if (!w.days || typeof w.days !== "object") w.days = {};
+    w.openingBalance = Math.trunc(Number(w.openingBalance)) || 0;
+    var keys = Object.keys(w.days);
+    for (var k = 0; k < keys.length; k++) {
+      var day = w.days[keys[k]];
+      if (!day || !Array.isArray(day.entries)) {
+        w.days[keys[k]] = { leave: !!(day && day.leave), entries: [] };
+        continue;
+      }
+      day.entries = day.entries.filter(function (e) {
+        return e && (e.type === "wage" || e.type === "advance" || e.type === "bonus")
+          && isFinite(Number(e.amount)) && Math.trunc(Number(e.amount)) > 0;
+      });
+      day.entries.forEach(function (e) { e.amount = Math.trunc(Number(e.amount)); });
+    }
+  }
+  if (!d.workers.some(function (w) { return w.id === d.activeWorkerId; })) {
+    d.activeWorkerId = d.workers[0].id;
+  }
+  return true;
+}
+
+function load() {
+  try {
+    var raw = localStorage.getItem(KEY);
+    if (!raw) return null;
+    var d = JSON.parse(raw);
+    return validData(d) ? d : null;
+  } catch (e) {
+    return null;
+  }
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(data)); }
+
+var data = load() || seed();
+var now = new Date();
+var viewYear = now.getFullYear();
+var viewMonth = now.getMonth();
+var selectedKey = null;
+var editingId = null;
+var formType = "wage";
+var formMode = "Cash";
+
+function activeWorker() {
+  for (var i = 0; i < data.workers.length; i++) {
+    if (data.workers[i].id === data.activeWorkerId) return data.workers[i];
+  }
+  return data.workers[0];
+}
+function getDay(w, k) { return w.days[k] || { leave: false, entries: [] }; }
+function entryDelta(e) {
+  return e.type === "advance" ? -Math.trunc(e.amount) : Math.trunc(e.amount);
+}
+function computeBalance(w, uptoKey) {
+  var total = Math.trunc(w.openingBalance) || 0;
+  var keys = Object.keys(w.days).sort();
+  for (var i = 0; i < keys.length; i++) {
+    if (uptoKey && keys[i] > uptoKey) break;
+    var day = w.days[keys[i]];
+    for (var j = 0; j < day.entries.length; j++) total += entryDelta(day.entries[j]);
+  }
+  return total;
+}
+function monthStats(w, y, m) {
+  var daysWorked = 0, leaves = 0, wages = 0, bonus = 0, adv = 0;
+  var dim = new Date(y, m + 1, 0).getDate();
+  for (var d = 1; d <= dim; d++) {
+    var day = w.days[keyOf(y, m, d)];
+    if (!day) continue;
+    if (day.leave) leaves++;
+    var hasWage = false;
+    for (var j = 0; j < day.entries.length; j++) {
+      var e = day.entries[j], a = Math.trunc(e.amount) || 0;
+      if (e.type === "wage") { wages += a; hasWage = true; }
+      else if (e.type === "bonus") { bonus += a; }
+      else if (e.type === "advance") { adv += a; }
+    }
+    if (hasWage) daysWorked++;
+  }
+  return {
+    daysWorked: daysWorked, leaves: leaves, wages: wages,
+    bonus: bonus, advances: adv, closing: computeBalance(w, keyOf(y, m, dim))
+  };
+}
+
+function renderAll() {
+  renderWorkers();
+  renderBalance();
+  renderCalendar();
+  renderDay();
+  renderSummary();
+}
+
+function renderWorkers() {
+  var html = "";
+  for (var i = 0; i < data.workers.length; i++) {
+    var w = data.workers[i];
+    html += '<button type="button" class="chip' + (w.id === data.activeWorkerId ? " active" : "") +
+      '" onclick="setActive(\'' + w.id + '\')">' + esc(w.name) + "</button>";
+  }
+  el("workerChips").innerHTML = html;
+}
+
+function renderBalance() {
+  var w = activeWorker();
+  var s = monthStats(w, viewYear, viewMonth);
+  el("balName").textContent = w.name;
+  el("balAmount").textContent = fmt(computeBalance(w));
+  el("balSub").textContent = monthName(viewYear, viewMonth) + " · കൂലി " + fmt(s.wages) +
+    " · മേടിച്ചത് " + fmt(s.advances);
+}
+
+function renderCalendar() {
+  var w = activeWorker();
+  var dim = new Date(viewYear, viewMonth + 1, 0).getDate();
+  var lead = new Date(viewYear, viewMonth, 1).getDay();
+  var html = "";
+  for (var i = 0; i < lead; i++) html += '<div class="cell blank"></div>';
+  for (var d = 1; d <= dim; d++) {
+    var k = keyOf(viewYear, viewMonth, d);
+    var day = w.days[k];
+    var cls = "cell";
+    if (viewYear === now.getFullYear() && viewMonth === now.getMonth() && d === now.getDate()) cls += " today";
+    if (selectedKey === k) cls += " selected";
+    html += '<button type="button" class="' + cls + '" onclick="selectDay(\'' + k + '\')">';
+    html += '<span class="num">' + d + "</span>";
+    if (day) {
+      var wg = 0, ad = 0, hasBonus = false;
+      for (var j = 0; j < day.entries.length; j++) {
+        var e = day.entries[j];
+        if (e.type === "wage") wg += Math.trunc(e.amount) || 0;
+        else if (e.type === "advance") ad += Math.trunc(e.amount) || 0;
+        else if (e.type === "bonus") hasBonus = true;
+      }
+      if (wg > 0) html += '<span class="amt green">' + shortNum(wg) + "</span>";
+      if (ad > 0) html += '<span class="amt red">' + shortNum(ad) + "</span>";
+      if (hasBonus) html += '<span class="dot" title="Bonus"></span>';
+      if (day.leave) html += '<span class="lv">L</span>';
+    }
+    html += "</button>";
+  }
+  el("calGrid").innerHTML = html;
+  el("calMonth").textContent = monthName(viewYear, viewMonth);
+}
+
+function renderDay() {
+  var panel = el("dayPanel");
+  if (!selectedKey) { panel.hidden = true; return; }
+  panel.hidden = false;
+  var w = activeWorker();
+  var day = getDay(w, selectedKey);
+  el("dayTitle").textContent = dayTitle(selectedKey);
+  el("leaveToggle").checked = !!day.leave;
+  var html = "";
+  if (day.entries.length === 0) {
+    html = '<p class="empty">ഈ ദിവസം എൻട്രികളില്ല.</p>';
+  } else {
+    for (var i = 0; i < day.entries.length; i++) {
+      var e = day.entries[i];
+      var sub = [];
+      if (e.job) sub.push(esc(e.job));
+      if (e.mode) sub.push(esc(e.mode));
+      if (e.desc) sub.push(esc(e.desc));
+      var amtCls = e.type === "advance" ? "red" : (e.type === "bonus" ? "amber" : "green");
+      var sign = e.type === "advance" ? "−" : "+";
+      html += '<div class="entry-row"><div class="entry-main">' +
+        '<div class="entry-type">' + TYPE_LABEL[e.type] + "</div>" +
+        (sub.length ? '<div class="entry-sub">' + sub.join(" · ") + "</div>" : "") +
+        '</div><div class="entry-amt ' + amtCls + '">' + sign + " " + fmt(e.amount) + "</div>" +
+        '<div class="entry-btns">' +
+        '<button type="button" class="mini-btn" onclick="editEntry(\'' + e.id + '\')">തിരുത്തുക</button>' +
+        '<button type="button" class="mini-btn del" onclick="deleteEntry(\'' + e.id + '\')">×</button>' +
+        "</div></div>";
+    }
+  }
+  el("dayEntries").innerHTML = html;
+  if (!editingId) resetForm();
+}
+
+function renderSummary() {
+  var w = activeWorker();
+  el("sumMonth").textContent = monthName(viewYear, viewMonth);
+  el("monthSummary").innerHTML = summaryHtml(monthStats(w, viewYear, viewMonth));
+  var py = viewMonth === 0 ? viewYear - 1 : viewYear;
+  var pm = viewMonth === 0 ? 11 : viewMonth - 1;
+  el("lastMonthName").textContent = monthName(py, pm);
+  el("lastSummary").innerHTML = summaryHtml(monthStats(w, py, pm));
+}
+
+function summaryHtml(s) {
+  return '<div class="sum-row"><span>ജോലി ദിവസങ്ങൾ</span><span>' + s.daysWorked + "</span></div>" +
+    '<div class="sum-row"><span>ലീവ്</span><span>' + s.leaves + "</span></div>" +
+    '<div class="sum-row"><span>മൊത്തം കൂലി</span><span class="v-green">' + fmt(s.wages) + "</span></div>" +
+    '<div class="sum-row"><span>മൊത്തം ബോണസ്</span><span class="v-amber">' + fmt(s.bonus) + "</span></div>" +
+    '<div class="sum-row"><span>മൊത്തം മേടിച്ചത്</span><span class="v-red">' + fmt(s.advances) + "</span></div>" +
+    '<div class="sum-row total"><span>ബാലൻസ്</span><span>' + fmt(s.closing) + "</span></div>";
+}
+
+function updateTypeUI() {
+  el("typeWage").classList.toggle("active", formType === "wage");
+  el("typeAdvance").classList.toggle("active", formType === "advance");
+  el("typeBonus").classList.toggle("active", formType === "bonus");
+  el("jobRow").hidden = formType !== "wage";
+  el("modeRow").hidden = formType !== "advance";
+}
+function updateModeUI() {
+  el("modeCash").classList.toggle("active", formMode === "Cash");
+  el("modeGPay").classList.toggle("active", formMode === "GPay");
+  el("modeOther").classList.toggle("active", formMode === "Other");
+}
+function fillJobOptions(selected) {
+  var w = activeWorker();
+  var html = "";
+  for (var i = 0; i < w.jobs.length; i++) {
+    html += '<option value="' + esc(w.jobs[i]) + '"' +
+      (w.jobs[i] === selected ? " selected" : "") + ">" + esc(w.jobs[i]) + "</option>";
+  }
+  el("fJob").innerHTML = html;
+}
+function resetForm() {
+  formType = "wage";
+  formMode = "Cash";
+  editingId = null;
+  el("fAmount").value = "";
+  el("fDesc").value = "";
+  fillJobOptions();
+  updateTypeUI();
+  updateModeUI();
+  el("cancelEditBtn").hidden = true;
+  el("saveBtn").textContent = "സേവ്";
+}
+
+function selectDay(k) {
+  selectedKey = k;
+  editingId = null;
+  renderAll();
+  var panel = el("dayPanel");
+  if (panel.scrollIntoView) panel.scrollIntoView({ block: "nearest" });
+}
+function closeDay() { selectedKey = null; editingId = null; renderAll(); }
+function setActive(id) {
+  data.activeWorkerId = id;
+  selectedKey = null;
+  editingId = null;
+  save();
+  renderAll();
+}
+function shiftMonth(dir) {
+  viewMonth += dir;
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  renderAll();
+}
+function goToday() {
+  now = new Date();
+  viewYear = now.getFullYear();
+  viewMonth = now.getMonth();
+  selectedKey = keyOf(viewYear, viewMonth, now.getDate());
+  editingId = null;
+  renderAll();
+}
+function setFormType(t) { formType = t; updateTypeUI(); }
+function setFormMode(m) { formMode = m; updateModeUI(); }
+
+function saveEntry() {
+  var amt = Math.trunc(Number(el("fAmount").value));
+  if (!amt || amt <= 0) { alert("തുക കൊടുക്കുക"); return; }
+  var w = activeWorker();
+  var day = w.days[selectedKey];
+  if (!day) { day = { leave: false, entries: [] }; w.days[selectedKey] = day; }
+  var entry = { id: editingId || uid(), type: formType, amount: amt };
+  if (formType === "wage") entry.job = el("fJob").value;
+  if (formType === "advance") entry.mode = formMode;
+  var desc = el("fDesc").value.trim();
+  if (desc) entry.desc = desc;
+  if (editingId) {
+    for (var i = 0; i < day.entries.length; i++) {
+      if (day.entries[i].id === editingId) { day.entries[i] = entry; break; }
+    }
+  } else {
+    day.entries.push(entry);
+  }
+  save();
+  resetForm();
+  renderAll();
+}
+function editEntry(id) {
+  var w = activeWorker();
+  var day = getDay(w, selectedKey);
+  for (var i = 0; i < day.entries.length; i++) {
+    if (day.entries[i].id === id) {
+      var e = day.entries[i];
+      editingId = id;
+      formType = e.type;
+      formMode = e.mode || "Cash";
+      el("fAmount").value = e.amount;
+      el("fDesc").value = e.desc || "";
+      fillJobOptions(e.job);
+      updateTypeUI();
+      updateModeUI();
+      el("cancelEditBtn").hidden = false;
+      el("saveBtn").textContent = "സേവ്";
+      el("fAmount").focus();
+      return;
+    }
+  }
+}
+function cancelEdit() { resetForm(); }
+function deleteEntry(id) {
+  if (!confirm("ഈ എൻട്രി ഇല്ലാതാക്കണോ?")) return;
+  var w = activeWorker();
+  var day = w.days[selectedKey];
+  if (!day) return;
+  for (var i = 0; i < day.entries.length; i++) {
+    if (day.entries[i].id === id) { day.entries.splice(i, 1); break; }
+  }
+  if (day.entries.length === 0 && !day.leave) delete w.days[selectedKey];
+  if (editingId === id) resetForm();
+  save();
+  renderAll();
+}
+function toggleLeave() {
+  var w = activeWorker();
+  var day = w.days[selectedKey];
+  if (!day) { day = { leave: false, entries: [] }; w.days[selectedKey] = day; }
+  day.leave = el("leaveToggle").checked;
+  if (day.entries.length === 0 && !day.leave) delete w.days[selectedKey];
+  save();
+  renderAll();
+}
+
+function addWorker() {
+  var name = prompt("തൊഴിലാളിയുടെ പേര്");
+  if (name == null) return;
+  name = name.trim();
+  if (!name) return;
+  var w = { id: uid(), name: name, openingBalance: 0, jobs: DEFAULT_JOBS.slice(), days: {} };
+  data.workers.push(w);
+  data.activeWorkerId = w.id;
+  selectedKey = null;
+  editingId = null;
+  save();
+  renderAll();
+}
+function renameWorker() {
+  var w = activeWorker();
+  var name = prompt("പുതിയ പേര്", w.name);
+  if (name == null) return;
+  name = name.trim();
+  if (!name) return;
+  w.name = name;
+  save();
+  renderAll();
+  renderSettings();
+}
+function deleteWorker() {
+  var w = activeWorker();
+  if (data.workers.length <= 1) { alert("ഒരു തൊഴിലാളി എങ്കിലും വേണം."); return; }
+  if (!confirm(w.name + " എന്ന തൊഴിലാളിയെയും എല്ലാ കണക്കുകളും ഇല്ലാതാക്കണോ?")) return;
+  for (var i = 0; i < data.workers.length; i++) {
+    if (data.workers[i].id === w.id) { data.workers.splice(i, 1); break; }
+  }
+  data.activeWorkerId = data.workers[0].id;
+  selectedKey = null;
+  editingId = null;
+  save();
+  closeSettings();
+  renderAll();
+}
+
+function renderSettings() {
+  var w = activeWorker();
+  el("settingsWorkerName").textContent = w.name;
+  var html = "";
+  for (var i = 0; i < w.jobs.length; i++) {
+    html += '<div class="jobrow"><span>' + esc(w.jobs[i]) + "</span>" +
+      '<button type="button" class="mini-btn del" onclick="removeJob(' + i + ')">×</button></div>';
+  }
+  el("jobList").innerHTML = html || '<p class="empty">ജോലികളില്ല.</p>';
+  el("openingInput").value = w.openingBalance;
+  el("newJobInput").value = "";
+}
+function openSettings() { renderSettings(); el("settingsPanel").hidden = false; }
+function closeSettings() { el("settingsPanel").hidden = true; }
+function addJob() {
+  var name = el("newJobInput").value.trim();
+  if (!name) return;
+  activeWorker().jobs.push(name);
+  save();
+  renderSettings();
+  fillJobOptions();
+}
+function removeJob(i) {
+  var w = activeWorker();
+  if (!confirm(w.jobs[i] + " ഒഴിവാക്കണോ?")) return;
+  w.jobs.splice(i, 1);
+  save();
+  renderSettings();
+  fillJobOptions();
+}
+function saveOpening() {
+  var v = Math.trunc(Number(el("openingInput").value));
+  if (!isFinite(v)) { alert("തുക കൊടുക്കുക"); return; }
+  activeWorker().openingBalance = v;
+  save();
+  renderAll();
+  alert("സേവ് ചെയ്തു");
+}
+function exportData() {
+  var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "wage-book-backup.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+function importFileChanged() {
+  var file = el("importFile").files[0];
+  el("importFile").value = "";
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function () {
+    var parsed = null;
+    try { parsed = JSON.parse(reader.result); } catch (e) { parsed = null; }
+    if (!validData(parsed)) { alert("ഫയൽ ശരിയല്ല."); return; }
+    if (!confirm("ഇപ്പോഴത്തെ എല്ലാ ഡാറ്റയും മാറി ഈ ഫയലിലെ ഡാറ്റ വരും. തുടരണോ?")) return;
+    data = parsed;
+    selectedKey = null;
+    editingId = null;
+    save();
+    closeSettings();
+    renderAll();
+  };
+  reader.readAsText(file);
+}
+function clearData() {
+  if (!confirm("എല്ലാ ഡാറ്റയും മായ്ക്കണോ? ഇത് തിരിച്ചെടുക്കാൻ പറ്റില്ല.")) return;
+  data = seed();
+  selectedKey = null;
+  editingId = null;
+  save();
+  closeSettings();
+  renderAll();
+}
+
+function shareMonth() {
+  var w = activeWorker();
+  var s = monthStats(w, viewYear, viewMonth);
+  var lines = [
+    "Wage Book — " + w.name,
+    monthName(viewYear, viewMonth),
+    "ജോലി ദിവസങ്ങൾ: " + s.daysWorked,
+    "ലീവ്: " + s.leaves,
+    "കൂലി: " + fmt(s.wages),
+    "ബോണസ്: " + fmt(s.bonus),
+    "മേടിച്ചത്: " + fmt(s.advances),
+    "ബാലൻസ്: " + fmt(s.closing)
+  ];
+  window.open("https://wa.me/?text=" + encodeURIComponent(lines.join("\n")), "_blank");
+}
+
+function init() {
+  if (!data.workers.some(function (w) { return w.id === data.activeWorkerId; })) {
+    data.activeWorkerId = data.workers[0].id;
+  }
+  el("prevMonth").onclick = function () { shiftMonth(-1); };
+  el("nextMonth").onclick = function () { shiftMonth(1); };
+  el("todayBtn").onclick = goToday;
+  el("closeDay").onclick = closeDay;
+  el("leaveToggle").addEventListener("change", toggleLeave);
+  el("typeWage").onclick = function () { setFormType("wage"); };
+  el("typeAdvance").onclick = function () { setFormType("advance"); };
+  el("typeBonus").onclick = function () { setFormType("bonus"); };
+  el("modeCash").onclick = function () { setFormMode("Cash"); };
+  el("modeGPay").onclick = function () { setFormMode("GPay"); };
+  el("modeOther").onclick = function () { setFormMode("Other"); };
+  el("cancelEditBtn").onclick = cancelEdit;
+  el("entryForm").addEventListener("submit", function (ev) { ev.preventDefault(); saveEntry(); });
+  el("shareBtn").onclick = shareMonth;
+  el("addWorkerBtn").onclick = addWorker;
+  el("settingsBtn").onclick = openSettings;
+  el("closeSettings").onclick = closeSettings;
+  el("renameWorkerBtn").onclick = renameWorker;
+  el("deleteWorkerBtn").onclick = deleteWorker;
+  el("addJobBtn").onclick = addJob;
+  el("saveOpeningBtn").onclick = saveOpening;
+  el("exportBtn").onclick = exportData;
+  el("importBtn").onclick = function () { el("importFile").click(); };
+  el("importFile").addEventListener("change", importFileChanged);
+  el("clearBtn").onclick = clearData;
+  if ("serviceWorker" in navigator) {
+    try { navigator.serviceWorker.register("./sw.js"); } catch (e) { /* offline use still works without it */ }
+  }
+  renderAll();
+}
+init();
+</script>
+</body>
+</html>
