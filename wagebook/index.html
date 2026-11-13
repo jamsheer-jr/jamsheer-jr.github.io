@@ -72,6 +72,9 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 .cell.blank { border-color: transparent; background: transparent; }
 .cell.today { border-color: #059669; border-width: 2px; background: #ecfdf5; }
 .cell.selected { background: #d1fae5; border-color: #059669; }
+.cell.ticked { background: #d1fae5; border-color: #059669; border-width: 2px; }
+.sel-row { margin: 8px 0 4px; }
+.sel-row .btn { width: 100%; }
 .num { font-size: 14px; font-weight: 700; line-height: 1.2; }
 .amt { font-size: 10px; line-height: 1.35; font-weight: 600; white-space: nowrap; }
 .amt.green { color: #047857; }
@@ -174,8 +177,24 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
       </div>
       <button id="nextMonth" class="navbtn" type="button" aria-label="Next month">›</button>
     </div>
+    <div class="sel-row"><button id="selectModeBtn" class="btn" type="button">Select days</button></div>
     <div class="dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
     <div id="calGrid" class="grid"></div>
+  </section>
+
+  <section id="bulkBar" class="card" hidden>
+    <h2 id="bulkCount">0 days selected</h2>
+    <label class="fld">Job
+      <select id="bulkJob"></select>
+    </label>
+    <label class="fld">Daily wage ₹
+      <input id="bulkAmount" type="number" inputmode="numeric" min="1" step="1">
+    </label>
+    <div class="form-btns">
+      <button type="button" class="btn primary" id="bulkApplyBtn">Apply to selected days</button>
+      <button type="button" class="btn ghost" id="bulkClearBtn">Clear</button>
+    </div>
+    <p id="bulkMsg" class="empty"></p>
   </section>
 
   <section id="dayPanel" class="card" hidden>
@@ -211,6 +230,7 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
       <div class="form-btns">
         <button type="submit" class="btn primary" id="saveBtn">Save</button>
         <button type="button" class="btn ghost" id="cancelEditBtn" hidden>Cancel</button>
+        <button type="button" class="btn ghost" id="addBonusBtn" hidden>+ Add bonus</button>
       </div>
     </form>
   </section>
@@ -342,6 +362,8 @@ var selectedKey = null;
 var editingId = null;
 var formType = "wage";
 var formMode = "Cash";
+var selectMode = false;
+var ticked = {};
 
 function activeWorker() {
   for (var i = 0; i < data.workers.length; i++) {
@@ -391,6 +413,7 @@ function renderAll() {
   renderCalendar();
   renderDay();
   renderSummary();
+  renderBulkBar();
 }
 
 function renderWorkers() {
@@ -424,8 +447,9 @@ function renderCalendar() {
     var cls = "cell";
     if (viewYear === now.getFullYear() && viewMonth === now.getMonth() && d === now.getDate()) cls += " today";
     if (selectedKey === k) cls += " selected";
-    html += '<button type="button" class="' + cls + '" onclick="selectDay(\'' + k + '\')">';
-    html += '<span class="num">' + d + "</span>";
+    if (selectMode && ticked[k]) cls += " ticked";
+    html += '<button type="button" class="' + cls + '" onclick="' + (selectMode ? "toggleTick" : "selectDay") + '(\'' + k + '\')">';
+    html += '<span class="num">' + (selectMode && ticked[k] ? "✓ " : "") + d + "</span>";
     if (day) {
       var wg = 0, ad = 0, hasBonus = false;
       for (var j = 0; j < day.entries.length; j++) {
@@ -490,7 +514,7 @@ function renderSummary() {
 }
 
 function summaryHtml(s) {
-  return '<div class="sum-row"><span>Days worked</span><span>' + s.daysWorked + "</span></div>" +
+  return '<div class="sum-row"><span>Days worked</span><span>' + s.daysWorked + " / 30" + "</span></div>" +
     '<div class="sum-row"><span>Leaves</span><span>' + s.leaves + "</span></div>" +
     '<div class="sum-row"><span>Total wages</span><span class="v-green">' + fmt(s.wages) + "</span></div>" +
     '<div class="sum-row"><span>Total bonus</span><span class="v-amber">' + fmt(s.bonus) + "</span></div>" +
@@ -529,6 +553,7 @@ function resetForm() {
   updateTypeUI();
   updateModeUI();
   el("cancelEditBtn").hidden = true;
+  el("addBonusBtn").hidden = true;
   el("saveBtn").textContent = "Save";
 }
 
@@ -540,10 +565,73 @@ function selectDay(k) {
   if (panel.scrollIntoView) panel.scrollIntoView({ block: "nearest" });
 }
 function closeDay() { selectedKey = null; editingId = null; renderAll(); }
+function toggleSelectMode() {
+  selectMode = !selectMode;
+  ticked = {};
+  selectedKey = null;
+  editingId = null;
+  el("selectModeBtn").textContent = selectMode ? "Done" : "Select days";
+  el("selectModeBtn").classList.toggle("primary", selectMode);
+  renderAll();
+  renderBulkBar("");
+}
+function toggleTick(k) {
+  if (ticked[k]) delete ticked[k]; else ticked[k] = true;
+  renderAll();
+}
+function clearTicks() { ticked = {}; renderAll(); renderBulkBar(""); }
+function fillBulkJobs() {
+  var w = activeWorker();
+  var cur = el("bulkJob").value;
+  var html = "";
+  for (var i = 0; i < w.jobs.length; i++) {
+    html += '<option value="' + esc(w.jobs[i]) + '">' + esc(w.jobs[i]) + "</option>";
+  }
+  el("bulkJob").innerHTML = html;
+  if (cur) el("bulkJob").value = cur;
+}
+function renderBulkBar(msg) {
+  el("bulkBar").hidden = !selectMode;
+  if (!selectMode) return;
+  fillBulkJobs();
+  var n = Object.keys(ticked).length;
+  el("bulkCount").textContent = n + (n === 1 ? " day selected" : " days selected");
+  if (msg !== undefined) el("bulkMsg").textContent = msg;
+}
+function applyBulk() {
+  var keys = Object.keys(ticked).sort();
+  if (keys.length === 0) { alert("Tick at least one day"); return; }
+  var amt = Math.trunc(Number(el("bulkAmount").value));
+  if (!amt || amt <= 0) { alert("Enter an amount"); return; }
+  var job = el("bulkJob").value;
+  var w = activeWorker();
+  var applied = 0, skipped = 0;
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    var day = w.days[k];
+    var hasWage = false;
+    if (day) {
+      for (var j = 0; j < day.entries.length; j++) {
+        if (day.entries[j].type === "wage") { hasWage = true; break; }
+      }
+    }
+    if ((day && day.leave) || hasWage) { skipped++; continue; }
+    if (!day) { day = { leave: false, entries: [] }; w.days[k] = day; }
+    day.entries.push({ id: uid(), type: "wage", amount: amt, job: job });
+    applied++;
+  }
+  save();
+  ticked = {};
+  renderAll();
+  var msg = "Applied to " + applied + (applied === 1 ? " day" : " days");
+  if (skipped > 0) msg += " · " + skipped + " skipped (leave or wage already added)";
+  renderBulkBar(msg);
+}
 function setActive(id) {
   data.activeWorkerId = id;
   selectedKey = null;
   editingId = null;
+  ticked = {};
   save();
   renderAll();
 }
@@ -551,13 +639,15 @@ function shiftMonth(dir) {
   viewMonth += dir;
   if (viewMonth < 0) { viewMonth = 11; viewYear--; }
   if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  ticked = {};
   renderAll();
 }
 function goToday() {
   now = new Date();
   viewYear = now.getFullYear();
   viewMonth = now.getMonth();
-  selectedKey = keyOf(viewYear, viewMonth, now.getDate());
+  if (selectMode) { selectedKey = null; ticked = {}; }
+  else selectedKey = keyOf(viewYear, viewMonth, now.getDate());
   editingId = null;
   renderAll();
 }
@@ -601,6 +691,7 @@ function editEntry(id) {
       updateTypeUI();
       updateModeUI();
       el("cancelEditBtn").hidden = false;
+      el("addBonusBtn").hidden = false;
       el("saveBtn").textContent = "Save";
       el("fAmount").focus();
       return;
@@ -608,6 +699,11 @@ function editEntry(id) {
   }
 }
 function cancelEdit() { resetForm(); }
+function addBonusFromEdit() {
+  resetForm();
+  setFormType("bonus");
+  el("fAmount").focus();
+}
 function deleteEntry(id) {
   if (!confirm("Delete this entry?")) return;
   var w = activeWorker();
@@ -752,7 +848,7 @@ function shareMonth() {
   var lines = [
     "Wage Book — " + w.name,
     monthName(viewYear, viewMonth),
-    "Days worked: " + s.daysWorked,
+    "Days worked: " + s.daysWorked + " / 30",
     "Leaves: " + s.leaves,
     "Wages: " + fmt(s.wages),
     "Bonus: " + fmt(s.bonus),
@@ -769,6 +865,9 @@ function init() {
   el("prevMonth").onclick = function () { shiftMonth(-1); };
   el("nextMonth").onclick = function () { shiftMonth(1); };
   el("todayBtn").onclick = goToday;
+  el("selectModeBtn").onclick = toggleSelectMode;
+  el("bulkApplyBtn").onclick = applyBulk;
+  el("bulkClearBtn").onclick = clearTicks;
   el("closeDayBtn").onclick = closeDay;
   el("leaveToggle").addEventListener("change", toggleLeave);
   el("typeWage").onclick = function () { setFormType("wage"); };
@@ -778,13 +877,14 @@ function init() {
   el("modeGPay").onclick = function () { setFormMode("GPay"); };
   el("modeOther").onclick = function () { setFormMode("Other"); };
   el("cancelEditBtn").onclick = cancelEdit;
+  el("addBonusBtn").onclick = addBonusFromEdit;
   el("entryForm").addEventListener("submit", function (ev) { ev.preventDefault(); saveEntry(); });
   el("shareBtn").onclick = shareMonth;
   el("addWorkerBtn").onclick = addWorker;
   el("settingsBtn").onclick = openSettings;
   el("closeSettingsBtn").onclick = closeSettings;
   el("settingsPanel").addEventListener("click", function (ev) { if (ev.target === el("settingsPanel")) closeSettings(); });
-  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { closeSettings(); closeDay(); } });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { if (selectMode) toggleSelectMode(); closeSettings(); closeDay(); } });
   el("renameWorkerBtn").onclick = renameWorker;
   el("deleteWorkerBtn").onclick = deleteWorker;
   el("addJobBtn").onclick = addJob;
