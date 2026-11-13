@@ -1,5 +1,5 @@
 /* Wage Book service worker: cache-first for same-origin GET requests. */
-var CACHE = "wagebook-v1";
+var CACHE = "wagebook-v2";
 var ASSETS = [
   "./",
   "./index.html",

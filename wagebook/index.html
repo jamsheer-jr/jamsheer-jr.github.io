@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#059669">
 <meta name="description" content="Offline wage book: daily wages, advances, bonus and leave on a monthly calendar.">
-<title>Wage Book — കൂലി ബുക്ക്</title>
+<title>Wage Book</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
@@ -128,6 +128,7 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 .foot { text-align: center; color: #6b7280; font-size: 13px; margin-top: 16px; }
 
 .overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 10; }
+.overlay[hidden] { display: none; }
 .sheet { background: #fff; width: 100%; max-width: 480px; max-height: 92vh; overflow-y: auto; border-radius: 16px 16px 0 0; padding: 16px 16px 32px; }
 .row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
 .row-btns.col { flex-direction: column; }
@@ -143,7 +144,7 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
   <header>
     <div>
       <h1>Wage Book</h1>
-      <p class="tag">കൂലി കണക്ക്</p>
+      <p class="tag">Daily wage ledger</p>
     </div>
     <button id="settingsBtn" class="iconbtn" type="button" aria-label="Settings">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2" stroke-linecap="round">
@@ -155,11 +156,11 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 
   <div class="chips" id="workerChips"></div>
   <div class="chips">
-    <button id="addWorkerBtn" class="chip" type="button">+ തൊഴിലാളി</button>
+    <button id="addWorkerBtn" class="chip" type="button">+ Worker</button>
   </div>
 
   <section class="card balance">
-    <div class="bal-label"><span id="balName"></span> · ബാലൻസ്</div>
+    <div class="bal-label"><span id="balName"></span> · Balance</div>
     <div id="balAmount" class="bal-amount"></div>
     <div class="bal-sub" id="balSub"></div>
   </section>
@@ -169,95 +170,95 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
       <button id="prevMonth" class="navbtn" type="button" aria-label="Previous month">‹</button>
       <div class="cal-title">
         <span id="calMonth"></span>
-        <button id="todayBtn" type="button">ഇന്ന്</button>
+        <button id="todayBtn" type="button">Today</button>
       </div>
       <button id="nextMonth" class="navbtn" type="button" aria-label="Next month">›</button>
     </div>
-    <div class="dow"><span>ഞാ</span><span>തി</span><span>ചൊ</span><span>ബു</span><span>വ്യാ</span><span>വെ</span><span>ശ</span></div>
+    <div class="dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
     <div id="calGrid" class="grid"></div>
   </section>
 
   <section id="dayPanel" class="card" hidden>
     <div class="day-head">
       <h2 id="dayTitle"></h2>
-      <button id="closeDay" class="iconbtn" type="button" aria-label="Close">×</button>
+      <button id="closeDayBtn" class="iconbtn" type="button" aria-label="Close">×</button>
     </div>
-    <label class="leave-row"><input type="checkbox" id="leaveToggle"> <span>ലീവ് ദിവസം</span></label>
+    <label class="leave-row"><input type="checkbox" id="leaveToggle"> <span>Leave day</span></label>
     <div id="dayEntries"></div>
     <form id="entryForm" class="entry-form">
       <div class="seg">
-        <button type="button" id="typeWage" class="segbtn active">കൂലി</button>
-        <button type="button" id="typeAdvance" class="segbtn">മേടിച്ചത്</button>
-        <button type="button" id="typeBonus" class="segbtn">ബോണസ്</button>
+        <button type="button" id="typeWage" class="segbtn active">Wage</button>
+        <button type="button" id="typeAdvance" class="segbtn">Advance</button>
+        <button type="button" id="typeBonus" class="segbtn">Bonus</button>
       </div>
-      <label class="fld">തുക ₹
+      <label class="fld">Amount ₹
         <input id="fAmount" type="number" inputmode="numeric" min="1" step="1" required>
       </label>
-      <label class="fld" id="jobRow">ജോലി
+      <label class="fld" id="jobRow">Job
         <select id="fJob"></select>
       </label>
       <div class="fld" id="modeRow" hidden>
-        <span class="lbl">രീതി</span>
+        <span class="lbl">Method</span>
         <div class="chips">
           <button type="button" id="modeCash" class="chip sm active">Cash</button>
           <button type="button" id="modeGPay" class="chip sm">GPay</button>
           <button type="button" id="modeOther" class="chip sm">Other</button>
         </div>
       </div>
-      <label class="fld">വിവരണം (ഓപ്ഷണൽ)
+      <label class="fld">Description (optional)
         <input id="fDesc" type="text" maxlength="120">
       </label>
       <div class="form-btns">
-        <button type="submit" class="btn primary" id="saveBtn">സേവ്</button>
-        <button type="button" class="btn ghost" id="cancelEditBtn" hidden>റദ്ദാക്കുക</button>
+        <button type="submit" class="btn primary" id="saveBtn">Save</button>
+        <button type="button" class="btn ghost" id="cancelEditBtn" hidden>Cancel</button>
       </div>
     </form>
   </section>
 
   <section class="card">
-    <h2>ഈ മാസത്തെ കണക്ക് <span id="sumMonth" class="muted"></span></h2>
+    <h2>This month <span id="sumMonth" class="muted"></span></h2>
     <div id="monthSummary"></div>
-    <button id="shareBtn" class="btn wa full" type="button">WhatsApp-ൽ അയക്കുക</button>
+    <button id="shareBtn" class="btn wa full" type="button">Send on WhatsApp</button>
   </section>
 
   <section class="card">
-    <h2>കഴിഞ്ഞ മാസം <span id="lastMonthName" class="muted"></span></h2>
+    <h2>Last month <span id="lastMonthName" class="muted"></span></h2>
     <div id="lastSummary"></div>
   </section>
 
-  <p class="foot">ഡാറ്റ ഈ ഫോണിൽ മാത്രം സേവ് ചെയ്യുന്നു.</p>
+  <p class="foot">Data is saved only on this phone.</p>
 </div>
 
 <div id="settingsPanel" class="overlay" hidden>
   <div class="sheet">
     <div class="sheet-head">
-      <h2>സെറ്റിങ്സ്</h2>
-      <button id="closeSettings" class="iconbtn" type="button" aria-label="Close">×</button>
+      <h2>Settings</h2>
+      <button id="closeSettingsBtn" class="iconbtn" type="button" aria-label="Close">×</button>
     </div>
-    <h3>തൊഴിലാളി — <span id="settingsWorkerName"></span></h3>
+    <h3>Worker — <span id="settingsWorkerName"></span></h3>
     <div class="row-btns">
-      <button id="renameWorkerBtn" class="btn" type="button">പേര് മാറ്റുക</button>
-      <button id="deleteWorkerBtn" class="btn danger" type="button">ഒഴിവാക്കുക</button>
+      <button id="renameWorkerBtn" class="btn" type="button">Rename</button>
+      <button id="deleteWorkerBtn" class="btn danger" type="button">Remove</button>
     </div>
-    <h3>ജോലികൾ</h3>
+    <h3>Jobs</h3>
     <div id="jobList"></div>
     <div class="add-row">
-      <input id="newJobInput" type="text" maxlength="40" placeholder="പുതിയ ജോലി">
-      <button id="addJobBtn" class="btn" type="button">ചേർക്കുക</button>
+      <input id="newJobInput" type="text" maxlength="40" placeholder="New job">
+      <button id="addJobBtn" class="btn" type="button">Add</button>
     </div>
-    <h3>തുടക്ക ബാലൻസ്</h3>
+    <h3>Opening balance</h3>
     <div class="add-row">
       <input id="openingInput" type="number" inputmode="numeric" step="1">
-      <button id="saveOpeningBtn" class="btn" type="button">സേവ്</button>
+      <button id="saveOpeningBtn" class="btn" type="button">Save</button>
     </div>
-    <h3>ഡാറ്റ</h3>
+    <h3>Data</h3>
     <div class="row-btns col">
-      <button id="exportBtn" class="btn" type="button">ഡാറ്റ എക്സ്പോർട്ട് (JSON)</button>
-      <button id="importBtn" class="btn" type="button">ഡാറ്റ ഇമ്പോർട്ട്</button>
+      <button id="exportBtn" class="btn" type="button">Export data (JSON)</button>
+      <button id="importBtn" class="btn" type="button">Import data</button>
       <input type="file" id="importFile" accept=".json,application/json" hidden>
-      <button id="clearBtn" class="btn danger" type="button">എല്ലാ ഡാറ്റയും മായ്ക്കുക</button>
+      <button id="clearBtn" class="btn danger" type="button">Clear all data</button>
     </div>
-    <p class="privacy">ഡാറ്റ ഈ ഫോണിൽ മാത്രം സേവ് ചെയ്യുന്നു. ഇന്റർനെറ്റിലേക്ക് ഒന്നും അയക്കുന്നില്ല.</p>
+    <p class="privacy">Data is saved only on this phone. Nothing is sent to the internet.</p>
   </div>
 </div>
 
@@ -265,7 +266,7 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
 "use strict";
 var KEY = "wagebook-v1";
 var DEFAULT_JOBS = ["Mobile Repair", "Laptop Repair", "CCTV", "Camera", "Other"];
-var TYPE_LABEL = { wage: "കൂലി", advance: "മേടിച്ചത്", bonus: "ബോണസ്" };
+var TYPE_LABEL = { wage: "Wage", advance: "Advance", bonus: "Bonus" };
 
 function el(id) { return document.getElementById(id); }
 function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -407,8 +408,8 @@ function renderBalance() {
   var s = monthStats(w, viewYear, viewMonth);
   el("balName").textContent = w.name;
   el("balAmount").textContent = fmt(computeBalance(w));
-  el("balSub").textContent = monthName(viewYear, viewMonth) + " · കൂലി " + fmt(s.wages) +
-    " · മേടിച്ചത് " + fmt(s.advances);
+  el("balSub").textContent = monthName(viewYear, viewMonth) + " · Wage " + fmt(s.wages) +
+    " · Advance " + fmt(s.advances);
 }
 
 function renderCalendar() {
@@ -454,7 +455,7 @@ function renderDay() {
   el("leaveToggle").checked = !!day.leave;
   var html = "";
   if (day.entries.length === 0) {
-    html = '<p class="empty">ഈ ദിവസം എൻട്രികളില്ല.</p>';
+    html = '<p class="empty">No entries this day.</p>';
   } else {
     for (var i = 0; i < day.entries.length; i++) {
       var e = day.entries[i];
@@ -469,7 +470,7 @@ function renderDay() {
         (sub.length ? '<div class="entry-sub">' + sub.join(" · ") + "</div>" : "") +
         '</div><div class="entry-amt ' + amtCls + '">' + sign + " " + fmt(e.amount) + "</div>" +
         '<div class="entry-btns">' +
-        '<button type="button" class="mini-btn" onclick="editEntry(\'' + e.id + '\')">തിരുത്തുക</button>' +
+        '<button type="button" class="mini-btn" onclick="editEntry(\'' + e.id + '\')">Edit</button>' +
         '<button type="button" class="mini-btn del" onclick="deleteEntry(\'' + e.id + '\')">×</button>' +
         "</div></div>";
     }
@@ -489,12 +490,12 @@ function renderSummary() {
 }
 
 function summaryHtml(s) {
-  return '<div class="sum-row"><span>ജോലി ദിവസങ്ങൾ</span><span>' + s.daysWorked + "</span></div>" +
-    '<div class="sum-row"><span>ലീവ്</span><span>' + s.leaves + "</span></div>" +
-    '<div class="sum-row"><span>മൊത്തം കൂലി</span><span class="v-green">' + fmt(s.wages) + "</span></div>" +
-    '<div class="sum-row"><span>മൊത്തം ബോണസ്</span><span class="v-amber">' + fmt(s.bonus) + "</span></div>" +
-    '<div class="sum-row"><span>മൊത്തം മേടിച്ചത്</span><span class="v-red">' + fmt(s.advances) + "</span></div>" +
-    '<div class="sum-row total"><span>ബാലൻസ്</span><span>' + fmt(s.closing) + "</span></div>";
+  return '<div class="sum-row"><span>Days worked</span><span>' + s.daysWorked + "</span></div>" +
+    '<div class="sum-row"><span>Leaves</span><span>' + s.leaves + "</span></div>" +
+    '<div class="sum-row"><span>Total wages</span><span class="v-green">' + fmt(s.wages) + "</span></div>" +
+    '<div class="sum-row"><span>Total bonus</span><span class="v-amber">' + fmt(s.bonus) + "</span></div>" +
+    '<div class="sum-row"><span>Total advances</span><span class="v-red">' + fmt(s.advances) + "</span></div>" +
+    '<div class="sum-row total"><span>Balance</span><span>' + fmt(s.closing) + "</span></div>";
 }
 
 function updateTypeUI() {
@@ -528,7 +529,7 @@ function resetForm() {
   updateTypeUI();
   updateModeUI();
   el("cancelEditBtn").hidden = true;
-  el("saveBtn").textContent = "സേവ്";
+  el("saveBtn").textContent = "Save";
 }
 
 function selectDay(k) {
@@ -565,7 +566,7 @@ function setFormMode(m) { formMode = m; updateModeUI(); }
 
 function saveEntry() {
   var amt = Math.trunc(Number(el("fAmount").value));
-  if (!amt || amt <= 0) { alert("തുക കൊടുക്കുക"); return; }
+  if (!amt || amt <= 0) { alert("Enter an amount"); return; }
   var w = activeWorker();
   var day = w.days[selectedKey];
   if (!day) { day = { leave: false, entries: [] }; w.days[selectedKey] = day; }
@@ -600,7 +601,7 @@ function editEntry(id) {
       updateTypeUI();
       updateModeUI();
       el("cancelEditBtn").hidden = false;
-      el("saveBtn").textContent = "സേവ്";
+      el("saveBtn").textContent = "Save";
       el("fAmount").focus();
       return;
     }
@@ -608,7 +609,7 @@ function editEntry(id) {
 }
 function cancelEdit() { resetForm(); }
 function deleteEntry(id) {
-  if (!confirm("ഈ എൻട്രി ഇല്ലാതാക്കണോ?")) return;
+  if (!confirm("Delete this entry?")) return;
   var w = activeWorker();
   var day = w.days[selectedKey];
   if (!day) return;
@@ -631,7 +632,7 @@ function toggleLeave() {
 }
 
 function addWorker() {
-  var name = prompt("തൊഴിലാളിയുടെ പേര്");
+  var name = prompt("Worker name");
   if (name == null) return;
   name = name.trim();
   if (!name) return;
@@ -645,7 +646,7 @@ function addWorker() {
 }
 function renameWorker() {
   var w = activeWorker();
-  var name = prompt("പുതിയ പേര്", w.name);
+  var name = prompt("New name", w.name);
   if (name == null) return;
   name = name.trim();
   if (!name) return;
@@ -656,8 +657,8 @@ function renameWorker() {
 }
 function deleteWorker() {
   var w = activeWorker();
-  if (data.workers.length <= 1) { alert("ഒരു തൊഴിലാളി എങ്കിലും വേണം."); return; }
-  if (!confirm(w.name + " എന്ന തൊഴിലാളിയെയും എല്ലാ കണക്കുകളും ഇല്ലാതാക്കണോ?")) return;
+  if (data.workers.length <= 1) { alert("At least one worker is needed."); return; }
+  if (!confirm(w.name + " — remove this worker and all their records?")) return;
   for (var i = 0; i < data.workers.length; i++) {
     if (data.workers[i].id === w.id) { data.workers.splice(i, 1); break; }
   }
@@ -677,7 +678,7 @@ function renderSettings() {
     html += '<div class="jobrow"><span>' + esc(w.jobs[i]) + "</span>" +
       '<button type="button" class="mini-btn del" onclick="removeJob(' + i + ')">×</button></div>';
   }
-  el("jobList").innerHTML = html || '<p class="empty">ജോലികളില്ല.</p>';
+  el("jobList").innerHTML = html || '<p class="empty">No jobs yet.</p>';
   el("openingInput").value = w.openingBalance;
   el("newJobInput").value = "";
 }
@@ -693,7 +694,7 @@ function addJob() {
 }
 function removeJob(i) {
   var w = activeWorker();
-  if (!confirm(w.jobs[i] + " ഒഴിവാക്കണോ?")) return;
+  if (!confirm(w.jobs[i] + " — remove this job?")) return;
   w.jobs.splice(i, 1);
   save();
   renderSettings();
@@ -701,11 +702,11 @@ function removeJob(i) {
 }
 function saveOpening() {
   var v = Math.trunc(Number(el("openingInput").value));
-  if (!isFinite(v)) { alert("തുക കൊടുക്കുക"); return; }
+  if (!isFinite(v)) { alert("Enter an amount"); return; }
   activeWorker().openingBalance = v;
   save();
   renderAll();
-  alert("സേവ് ചെയ്തു");
+  alert("Saved");
 }
 function exportData() {
   var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
@@ -724,8 +725,8 @@ function importFileChanged() {
   reader.onload = function () {
     var parsed = null;
     try { parsed = JSON.parse(reader.result); } catch (e) { parsed = null; }
-    if (!validData(parsed)) { alert("ഫയൽ ശരിയല്ല."); return; }
-    if (!confirm("ഇപ്പോഴത്തെ എല്ലാ ഡാറ്റയും മാറി ഈ ഫയലിലെ ഡാറ്റ വരും. തുടരണോ?")) return;
+    if (!validData(parsed)) { alert("That file is not valid."); return; }
+    if (!confirm("This replaces all current data with the file's data. Continue?")) return;
     data = parsed;
     selectedKey = null;
     editingId = null;
@@ -736,7 +737,7 @@ function importFileChanged() {
   reader.readAsText(file);
 }
 function clearData() {
-  if (!confirm("എല്ലാ ഡാറ്റയും മായ്ക്കണോ? ഇത് തിരിച്ചെടുക്കാൻ പറ്റില്ല.")) return;
+  if (!confirm("Clear all data? This cannot be undone.")) return;
   data = seed();
   selectedKey = null;
   editingId = null;
@@ -751,12 +752,12 @@ function shareMonth() {
   var lines = [
     "Wage Book — " + w.name,
     monthName(viewYear, viewMonth),
-    "ജോലി ദിവസങ്ങൾ: " + s.daysWorked,
-    "ലീവ്: " + s.leaves,
-    "കൂലി: " + fmt(s.wages),
-    "ബോണസ്: " + fmt(s.bonus),
-    "മേടിച്ചത്: " + fmt(s.advances),
-    "ബാലൻസ്: " + fmt(s.closing)
+    "Days worked: " + s.daysWorked,
+    "Leaves: " + s.leaves,
+    "Wages: " + fmt(s.wages),
+    "Bonus: " + fmt(s.bonus),
+    "Advances: " + fmt(s.advances),
+    "Balance: " + fmt(s.closing)
   ];
   window.open("https://wa.me/?text=" + encodeURIComponent(lines.join("\n")), "_blank");
 }
@@ -768,7 +769,7 @@ function init() {
   el("prevMonth").onclick = function () { shiftMonth(-1); };
   el("nextMonth").onclick = function () { shiftMonth(1); };
   el("todayBtn").onclick = goToday;
-  el("closeDay").onclick = closeDay;
+  el("closeDayBtn").onclick = closeDay;
   el("leaveToggle").addEventListener("change", toggleLeave);
   el("typeWage").onclick = function () { setFormType("wage"); };
   el("typeAdvance").onclick = function () { setFormType("advance"); };
@@ -781,7 +782,9 @@ function init() {
   el("shareBtn").onclick = shareMonth;
   el("addWorkerBtn").onclick = addWorker;
   el("settingsBtn").onclick = openSettings;
-  el("closeSettings").onclick = closeSettings;
+  el("closeSettingsBtn").onclick = closeSettings;
+  el("settingsPanel").addEventListener("click", function (ev) { if (ev.target === el("settingsPanel")) closeSettings(); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") { closeSettings(); closeDay(); } });
   el("renameWorkerBtn").onclick = renameWorker;
   el("deleteWorkerBtn").onclick = deleteWorker;
   el("addJobBtn").onclick = addJob;
