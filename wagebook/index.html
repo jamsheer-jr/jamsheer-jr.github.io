@@ -194,6 +194,7 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
       <button type="button" class="btn primary" id="bulkApplyBtn">Apply to selected days</button>
       <button type="button" class="btn ghost" id="bulkClearBtn">Clear</button>
     </div>
+    <button type="button" class="btn full" id="bulkLeaveBtn">Mark selected as leave</button>
     <p id="bulkMsg" class="empty"></p>
   </section>
 
@@ -598,6 +599,13 @@ function renderBulkBar(msg) {
   el("bulkCount").textContent = n + (n === 1 ? " day selected" : " days selected");
   if (msg !== undefined) el("bulkMsg").textContent = msg;
 }
+function dayHasWage(day) {
+  if (!day) return false;
+  for (var j = 0; j < day.entries.length; j++) {
+    if (day.entries[j].type === "wage") return true;
+  }
+  return false;
+}
 function applyBulk() {
   var keys = Object.keys(ticked).sort();
   if (keys.length === 0) { alert("Tick at least one day"); return; }
@@ -609,13 +617,7 @@ function applyBulk() {
   for (var i = 0; i < keys.length; i++) {
     var k = keys[i];
     var day = w.days[k];
-    var hasWage = false;
-    if (day) {
-      for (var j = 0; j < day.entries.length; j++) {
-        if (day.entries[j].type === "wage") { hasWage = true; break; }
-      }
-    }
-    if ((day && day.leave) || hasWage) { skipped++; continue; }
+    if ((day && day.leave) || dayHasWage(day)) { skipped++; continue; }
     if (!day) { day = { leave: false, entries: [] }; w.days[k] = day; }
     day.entries.push({ id: uid(), type: "wage", amount: amt, job: job });
     applied++;
@@ -625,6 +627,26 @@ function applyBulk() {
   renderAll();
   var msg = "Applied to " + applied + (applied === 1 ? " day" : " days");
   if (skipped > 0) msg += " · " + skipped + " skipped (leave or wage already added)";
+  renderBulkBar(msg);
+}
+function applyBulkLeave() {
+  var keys = Object.keys(ticked).sort();
+  if (keys.length === 0) { alert("Tick at least one day"); return; }
+  var w = activeWorker();
+  var marked = 0, skipped = 0;
+  for (var i = 0; i < keys.length; i++) {
+    var k = keys[i];
+    var day = w.days[k];
+    if (dayHasWage(day)) { skipped++; continue; }
+    if (!day) { day = { leave: false, entries: [] }; w.days[k] = day; }
+    day.leave = true;
+    marked++;
+  }
+  save();
+  ticked = {};
+  renderAll();
+  var msg = "Marked " + marked + (marked === 1 ? " day" : " days") + " as leave";
+  if (skipped > 0) msg += " · " + skipped + " skipped (wage already added)";
   renderBulkBar(msg);
 }
 function setActive(id) {
@@ -805,7 +827,12 @@ function saveOpening() {
   alert("Saved");
 }
 function exportData() {
-  var blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  var json = JSON.stringify(data, null, 2);
+  if (typeof window.WageBookBridge !== "undefined" && window.WageBookBridge.exportJson) {
+    window.WageBookBridge.exportJson(json);
+    return;
+  }
+  var blob = new Blob([json], { type: "application/json" });
   var a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "wage-book-backup.json";
@@ -868,6 +895,7 @@ function init() {
   el("selectModeBtn").onclick = toggleSelectMode;
   el("bulkApplyBtn").onclick = applyBulk;
   el("bulkClearBtn").onclick = clearTicks;
+  el("bulkLeaveBtn").onclick = applyBulkLeave;
   el("closeDayBtn").onclick = closeDay;
   el("leaveToggle").addEventListener("change", toggleLeave);
   el("typeWage").onclick = function () { setFormType("wage"); };
@@ -893,7 +921,7 @@ function init() {
   el("importBtn").onclick = function () { el("importFile").click(); };
   el("importFile").addEventListener("change", importFileChanged);
   el("clearBtn").onclick = clearData;
-  if ("serviceWorker" in navigator) {
+  if ("serviceWorker" in navigator && typeof location !== "undefined" && location.protocol.indexOf("http") === 0) {
     try { navigator.serviceWorker.register("./sw.js"); } catch (e) { /* offline use still works without it */ }
   }
   renderAll();
