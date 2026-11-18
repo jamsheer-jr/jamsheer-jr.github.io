@@ -70,6 +70,7 @@ h3 { font-size: 15px; margin: 18px 0 8px; }
   padding: 4px 5px; position: relative; text-align: left; color: #111827;
 }
 .cell.blank { border-color: transparent; background: transparent; }
+.cell.worked { background: #dcfce7; }
 .cell.today { border-color: #059669; border-width: 2px; background: #ecfdf5; }
 .cell.selected { background: #d1fae5; border-color: #059669; }
 .cell.ticked { background: #d1fae5; border-color: #059669; border-width: 2px; }
@@ -445,21 +446,23 @@ function renderCalendar() {
   for (var d = 1; d <= dim; d++) {
     var k = keyOf(viewYear, viewMonth, d);
     var day = w.days[k];
-    var cls = "cell";
-    if (viewYear === now.getFullYear() && viewMonth === now.getMonth() && d === now.getDate()) cls += " today";
-    if (selectedKey === k) cls += " selected";
-    if (selectMode && ticked[k]) cls += " ticked";
-    html += '<button type="button" class="' + cls + '" onclick="' + (selectMode ? "toggleTick" : "selectDay") + '(\'' + k + '\')">';
-    html += '<span class="num">' + (selectMode && ticked[k] ? "✓ " : "") + d + "</span>";
+    var wg = 0, ad = 0, hasBonus = false;
     if (day) {
-      var wg = 0, ad = 0, hasBonus = false;
       for (var j = 0; j < day.entries.length; j++) {
         var e = day.entries[j];
         if (e.type === "wage") wg += Math.trunc(e.amount) || 0;
         else if (e.type === "advance") ad += Math.trunc(e.amount) || 0;
         else if (e.type === "bonus") hasBonus = true;
       }
-      if (wg > 0) html += '<span class="amt green">' + shortNum(wg) + "</span>";
+    }
+    var cls = "cell";
+    if (wg > 0) cls += " worked";
+    if (viewYear === now.getFullYear() && viewMonth === now.getMonth() && d === now.getDate()) cls += " today";
+    if (selectedKey === k) cls += " selected";
+    if (selectMode && ticked[k]) cls += " ticked";
+    html += '<button type="button" class="' + cls + '" onclick="' + (selectMode ? "toggleTick" : "selectDay") + '(\'' + k + '\')">';
+    html += '<span class="num">' + (selectMode && ticked[k] ? "✓ " : "") + d + "</span>";
+    if (day) {
       if (ad > 0) html += '<span class="amt red">' + shortNum(ad) + "</span>";
       if (hasBonus) html += '<span class="dot" title="Bonus"></span>';
       if (day.leave) html += '<span class="lv">L</span>';
